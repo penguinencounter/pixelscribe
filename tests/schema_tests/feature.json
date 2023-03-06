@@ -1,0 +1,79 @@
+[
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {}
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "example.png",
+      "feature": "not a real feature"
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "FileNotFoundError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "fakesrc",
+      "feature": "top_left_corner"
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "fakesrc",
+      "crop": 2
+    }
+  },
+  {
+    "expect": {
+      "ok": true
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "iterate": {
+      "feature": [
+        "top_left_corner",
+        "top_right_corner",
+        "bottom_left_corner",
+        "bottom_right_corner",
+        "block_quote_top_cap",
+        "block_quote_bottom_cap",
+        "code_top_left_corner",
+        "code_top_right_corner",
+        "code_bottom_left_corner",
+        "code_bottom_right_corner",
+        "horizontal_rule_left_cap",
+        "horizontal_rule_right_cap",
+        "bullet"
+      ]
+    },
+    "test": {
+      "source": "example.png"
+    }
+  }
+]

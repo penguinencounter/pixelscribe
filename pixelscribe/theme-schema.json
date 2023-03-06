@@ -1,0 +1,306 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Schema for theme files",
+  "description": "Schema for theme files",
+  "type": "object",
+  "properties": {
+    "features": {
+      "description": "Features of the theme (textures)",
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/sourced"
+          },
+          {
+            "$ref": "#/definitions/feature_justify"
+          }
+        ]
+      },
+      "required": [
+        "feature",
+        "source"
+      ]
+    },
+    "overlays": {
+      "description": "Overlays that are composited atop the rendered background",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/overlay"
+      }
+    },
+    "colors": {
+      "description": "Colors that are used in the theme",
+      "type": "object"
+    }
+  },
+  "definitions": {
+    "sourced": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "description": "Texture source for this feature, override, or overlay",
+          "type": "string"
+        },
+        "crop": {
+          "description": "Source cropping box, usually used with sprite-sheets.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 4,
+          "maxItems": 4,
+          "minimum": 0
+        }
+      },
+      "required": [
+        "source"
+      ]
+    },
+    "feature_justify": {
+      "oneOf": [
+        {
+          "properties": {
+            "feature": {
+              "description": "The feature that is being described",
+              "type": "string",
+              "enum": [
+                "top_left_corner",
+                "top_right_corner",
+                "bottom_left_corner",
+                "bottom_right_corner",
+                "block_quote_top_cap",
+                "block_quote_bottom_cap",
+                "code_top_left_corner",
+                "code_top_right_corner",
+                "code_bottom_left_corner",
+                "code_bottom_right_corner",
+                "horizontal_rule_left_cap",
+                "horizontal_rule_right_cap",
+                "bullet"
+              ]
+            },
+            "overrides": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/feature_override_0d"
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "feature": {
+              "description": "The feature that is being described",
+              "type": "string",
+              "enum": [
+                "top_edge",
+                "bottom_edge",
+                "left_edge",
+                "right_edge",
+                "block_quote",
+                "code_top_edge",
+                "code_bottom_edge",
+                "code_left_edge",
+                "code_right_edge",
+                "horizontal_rule"
+              ]
+            },
+            "overrides": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/feature_override_1d"
+              }
+            },
+            "justify": {
+              "$ref": "#/definitions/1d_justify"
+            }
+          }
+        },
+        {
+          "properties": {
+            "feature": {
+              "description": "The feature that is being described",
+              "type": "string",
+              "enum": [
+                "background",
+                "code_background"
+              ]
+            },
+            "overrides": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/feature_override_2d"
+              }
+            },
+            "justify": {
+              "$ref": "#/definitions/2d_justify"
+            }
+          }
+        }
+      ],
+      "required": [
+        "feature"
+      ]
+    },
+    "feature_override_0d": {
+      "description": "Overrides of the theme. For example, changing one tile in the background",
+      "allOf": [
+        {
+          "$ref": "#/definitions/sourced"
+        }
+      ]
+    },
+    "feature_override_1d": {
+      "description": "Overrides of the theme. For example, changing one tile in the background",
+      "allOf": [
+        {
+          "$ref": "#/definitions/sourced"
+        },
+        {
+          "properties": {
+            "index": {
+              "type": "number"
+            }
+          }
+        }
+      ]
+    },
+    "feature_override_2d": {
+      "description": "Overrides of the theme. For example, changing one tile in the background",
+      "allOf": [
+        {
+          "$ref": "#/definitions/sourced"
+        },
+        {
+          "properties": {
+            "index": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "2d_justify": {
+      "type": "string",
+      "enum": [
+        "top left",
+        "top right",
+        "bottom left",
+        "bottom right",
+        "center left",
+        "center right",
+        "top center",
+        "bottom center",
+        "center center",
+        "center",
+        "left",
+        "right",
+        "top",
+        "bottom"
+      ],
+      "default": "top left"
+    },
+    "1d_justify": {
+      "type": "string",
+      "enum": [
+        "start",
+        "center",
+        "end",
+        "top",
+        "bottom",
+        "left",
+        "right"
+      ],
+      "default": "start"
+    },
+    "2d_anchor_addons": {
+      "enum": [
+        "inside-top left",
+        "inside-top center",
+        "inside-top right",
+        "inside-bottom left",
+        "inside-bottom center",
+        "inside-bottom right",
+        "top inside-left",
+        "center inside-left",
+        "right inside-left",
+        "top inside-right",
+        "center inside-right",
+        "right inside-right"
+      ]
+    },
+    "overlay": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "description": "How the overlay is aligned with the rest of the elements of the page.",
+          "type": "string",
+          "default": "inside"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/sourced"
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "mode": {
+                  "const": "outside"
+                },
+                "anchor": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/definitions/2d_justify"
+                    },
+                    {
+                      "$ref": "#/definitions/2d_anchor_addons"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "mode": {
+                  "const": "edge"
+                },
+                "anchor": {
+                  "$ref": "#/definitions/2d_justify"
+                }
+              },
+              "required": [
+                "anchor"
+              ]
+            },
+            {
+              "properties": {
+                "mode": {
+                  "const": "inside"
+                },
+                "anchor": {
+                  "$ref": "#/definitions/2d_justify"
+                },
+                "above": {
+                  "type": "boolean",
+                  "default": false
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "required": [
+        "anchor",
+        "mode"
+      ]
+    }
+  }
+}

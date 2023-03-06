@@ -1,0 +1,158 @@
+[
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {}
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": []
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": 6
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "fakesrc",
+      "crop": []
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "fakesrc",
+      "crop": {}
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "fakesrc",
+      "crop": 2
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "fakesrc",
+      "crop": [0, 0]
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "fakesrc",
+      "crop": [-1, 0, 0, 0]
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "fakesrc",
+      "crop": [0.5, 0, 0, 0]
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "FileNotFoundError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "fakesrc"
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "FileNotFoundError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "fakesrc",
+      "crop": [0, 0, 0, 0]
+    }
+  },
+  {
+    "expect": {
+      "ok": true
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "example.png",
+      "crop": [0, 0, 0, 0]
+    }
+  },
+  {
+    "expect": {
+      "ok": true
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "example.png"
+    }
+  }
+]

@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "pixelscribe"
+version = "0.1.0"
+description = "A pixely documentation renderer"
+authors = ["PenguinEncounter <49845522+penguinencounter@users.noreply.github.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Pillow = "^9.4.0"
+cmarkgfm = "^2022.10.27"
+beautifulsoup4 = "^4.11.2"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1"
+pytest = ">=7.2.0"
+isort = "^5.12.0"
+python-semantic-release = "^7.33.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

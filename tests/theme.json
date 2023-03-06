@@ -1,0 +1,69 @@
+{
+  "$comment": "Schema manual test file; ensure that all of these are valid.",
+  "features": [
+    {
+      "feature": "background",
+      "source": "",
+      "crop": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "feature": "top_edge",
+      "source": "",
+      "crop": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "feature": "top_left_corner",
+      "source": "",
+      "crop": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "feature": "background",
+      "source": ""
+    },
+    {
+      "feature": "top_edge",
+      "source": ""
+    },
+    {
+      "feature": "top_left_corner",
+      "source": ""
+    },
+    {
+      "feature": "background",
+      "source": "",
+      "overrides": [
+        {
+          "index": [1, 1],
+          "source": ""
+        }
+      ]
+    },
+    {
+      "feature": "top_edge",
+      "source": "",
+      "overrides": [
+        {
+          "index": 1,
+          "source": ""
+        }
+      ]
+    }
+  ],
+  "overlays": [
+  ]
+}
