@@ -1,33 +1,40 @@
 #!/usr/bin/env bash
 set +e
 
+if [[ $1 -eq "-I" ]]; then
+I=1
+fi
+
 act() {
     pip install poetry
     poetry install
     npm i
-    RESTART_SHELL=0
-    grep -q "alias activate=" "$HOME/.bashrc"
-    if [[ $? -ne 0 ]]; then
-        echo "Installing .bashrc..."
-        printf '\nalias activate='"'"'source $(poetry env info --path)/bin/activate'"'"'\n' >> "$HOME/.bashrc"
-        RESTART_SHELL=1
-    else
-        echo "No shell updates needed."
-    fi
 }
 act
 source $(poetry env info --path)/bin/activate
 act
 deactivate
 
+RESTART_SHELL=0
+grep -q "alias activate=" "$HOME/.bashrc"
+if [[ $? -ne 0 ]]; then
+    echo "Installing .bashrc..."
+    printf '\nalias activate='"'"'source $(poetry env info --path)/bin/activate'"'"'\n' >> "$HOME/.bashrc"
+    RESTART_SHELL=1
+else
+    echo "No shell updates needed."
+fi
+
 echo "Installed."
 if [[ $RESTART_SHELL -eq 1 ]]; then
-    read -n 1 -p "Restart shell to apply changes? [Yn]" RESP
-    if [[ $RESP != "n" ]]; then
-        echo "Restarting..."
-        echo "Run 'activate' to activate your Poetry environment"
-        bash
-        exit 0
+    if [[ $I != 1 ]]; then
+        read -n 1 -p "Restart shell to apply changes? [Yn]" RESP
+        if [[ $RESP != "n" ]]; then
+            echo "Restarting..."
+            echo "Run 'activate' to activate your Poetry environment"
+            bash
+            exit 0
+        fi
     fi
 fi
 echo "Run 'activate' to activate your Poetry environment"
