@@ -1,18 +1,25 @@
 #!/usr/bin/env bash
 set +e
 
-pip install poetry
-poetry install
-npm i
-RESTART_SHELL=0
-grep -q "alias activate=" "$HOME/.bashrc"
-if [[ $? -ne 0 ]]; then
-    echo "Installing .bashrc..."
-    printf '\nalias activate='"'"'source $(poetry env info --path)/bin/activate'"'"'\n' >> "$HOME/.bashrc"
-    RESTART_SHELL=1
-else
-    echo "No shell updates needed."
-fi
+act() {
+    pip install poetry
+    poetry install
+    npm i
+    RESTART_SHELL=0
+    grep -q "alias activate=" "$HOME/.bashrc"
+    if [[ $? -ne 0 ]]; then
+        echo "Installing .bashrc..."
+        printf '\nalias activate='"'"'source $(poetry env info --path)/bin/activate'"'"'\n' >> "$HOME/.bashrc"
+        RESTART_SHELL=1
+    else
+        echo "No shell updates needed."
+    fi
+}
+act
+source $(poetry env info --path)/bin/activate
+act
+deactivate
+
 echo "Installed."
 if [[ $RESTART_SHELL -eq 1 ]]; then
     read -n 1 -p "Restart shell to apply changes? [Yn]" RESP
