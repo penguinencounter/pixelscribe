@@ -24,7 +24,7 @@
       "fileMatch": [
         "/book/*/theme.json"
       ],
-      "url": "./written_book/theme-schema.json"
+      "url": "./pixelscribe/theme-schema.json"
     }
   ],
   "python.analysis.typeCheckingMode": "basic"

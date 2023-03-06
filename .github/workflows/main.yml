@@ -39,7 +39,7 @@ jobs:
       - name: Run type-checking
         run: npm run check
       - name: Check formatting
-        run: poetry run black --check written_book examples tests
+        run: poetry run black --check pixelscribe tests
       - name: Release
         if: |
           github.repository == 'FIXME/FIXME'
