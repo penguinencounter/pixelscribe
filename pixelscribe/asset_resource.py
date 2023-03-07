@@ -332,7 +332,7 @@ class Justify1D(enum.Enum):
 
     @classmethod
     def from_name(cls, name: str) -> "Justify1D":
-        return {
+        m = {
             "start": cls.START,
             "center": cls.CENTER,
             "end": cls.END,
@@ -340,7 +340,13 @@ class Justify1D(enum.Enum):
             "right": cls.END,
             "top": cls.START,
             "bottom": cls.END,
-        }[name.lower()]
+        }
+        if name.lower() not in m:
+            raise ValidationError(
+                f"Invalid justify code: {name.lower()} is not supported",
+                ValidationError.ErrorCode.INVALID_VALUE,
+            )
+        return m[name.lower()]
 
 
 @enum.unique
@@ -570,7 +576,9 @@ class Feature1DOverride(FeatureOverride):
                 ValidationError.ErrorCode.MISSING_VALUE,
             )
         index = json_body["index"]
-        if not (isinstance(index, int) or (isinstance(index, float) and index.is_integer())):
+        if not (
+            isinstance(index, int) or (isinstance(index, float) and index.is_integer())
+        ):
             raise ValidationError(
                 f"FeatureOverride index should be an integer. (provided: {index})",
                 ValidationError.ErrorCode.WRONG_TYPE,
@@ -702,7 +710,9 @@ class Feature1D(Feature):
         elif feature in cls.VERTICAL_TYPES:
             direction = Direction.VERTICAL
         else:
-            raise ValueError(f"Unknown direction on feature type {feature} - report this as a bug!")
+            raise ValueError(
+                f"Unknown direction on feature type {feature} - report this as a bug!"
+            )
         return cls(asset, justify, direction, overrides)
 
 

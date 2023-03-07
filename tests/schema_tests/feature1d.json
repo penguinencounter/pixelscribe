@@ -32,7 +32,7 @@
     },
     "test": {
       "source": "fakesrc",
-      "feature": "background"
+      "feature": "top_edge"
     }
   },
   {
@@ -56,16 +56,10 @@
     "kwargs": {
       "theme_directory": "tests/schema_tests"
     },
-    "iterate": {
-      "justify": [
-        "other",
-        "bottom other",
-        "other left"
-      ]
-    },
     "test": {
       "source": "example.png",
-      "feature": "background"
+      "feature": "top_edge",
+      "justify": "other"
     }
   },
   {
@@ -77,29 +71,30 @@
     },
     "iterate": {
       "feature": [
-        "background",
-        "code_background"
+        "top_edge",
+        "bottom_edge",
+        "left_edge",
+        "right_edge",
+        "block_quote",
+        "code_top_edge",
+        "code_bottom_edge",
+        "code_left_edge",
+        "code_right_edge",
+        "horizontal_rule"
       ],
       "justify": [
-        "top left",
-        "top right",
-        "bottom left",
-        "bottom right",
-        "center left",
-        "center right",
-        "top center",
-        "bottom center",
-        "center center",
         "center",
         "left",
         "right",
         "top",
-        "bottom"
+        "bottom",
+        "start",
+        "end"
       ],
       "overrides": [
         [],
         [{
-          "index": [1, 1],
+          "index": 1,
           "source": "example.png"
         }]
       ]

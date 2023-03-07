@@ -8,7 +8,7 @@ from typing import Any, Callable, Dict, List, NamedTuple, Tuple, cast
 
 import pytest
 
-from pixelscribe.asset_resource import AssetResource, Feature, Feature2D
+from pixelscribe.asset_resource import AssetResource, Feature, Feature1D, Feature2D
 from pixelscribe.types import JSON, JSONObject
 
 
@@ -110,3 +110,9 @@ def test_import_feature(test_data: JsonTestCase):
 def test_import_feature2d(test_data: JsonTestCase):
     dump_test_case(test_data)
     run_test(test_data, Feature2D.import_)
+
+
+@pytest.mark.parametrize("test_data", compiled_tests["feature1d.json"])
+def test_import_feature1d(test_data: JsonTestCase):
+    dump_test_case(test_data)
+    run_test(test_data, Feature1D.import_)
