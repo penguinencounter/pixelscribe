@@ -556,8 +556,57 @@ class Feature1DOverride(FeatureOverride):
         super().__init__(asset)
         self.x = x
 
+    @classmethod
+    def import_(cls, json_body: JSON, theme_directory: typing.Optional[str] = None):
+        if not isinstance(json_body, dict):
+            raise ValidationError(
+                f"JSON body for FeatureOverride should be a dict, not {json_body.__class__.__name__}",
+                ValidationError.ErrorCode.WRONG_TYPE,
+            )
+        asset = AssetResource.import_(json_body, theme_directory)
+        if "index" not in json_body:
+            raise ValidationError(
+                'FeatureOverride(s) require a "index".',
+                ValidationError.ErrorCode.MISSING_VALUE,
+            )
+        index = json_body["index"]
+        if not (isinstance(index, int) or (isinstance(index, float) and index.is_integer())):
+            raise ValidationError(
+                f"FeatureOverride index should be an integer. (provided: {index})",
+                ValidationError.ErrorCode.WRONG_TYPE,
+            )
+        index = typing.cast(typing.Union[int, float], index)
+        return cls(asset, int(index))
+
 
 class Feature1D(Feature):
+    FEATURE_TYPES = [
+        "top_edge",
+        "bottom_edge",
+        "left_edge",
+        "right_edge",
+        "block_quote",
+        "code_top_edge",
+        "code_bottom_edge",
+        "code_left_edge",
+        "code_right_edge",
+        "horizontal_rule",
+    ]
+    HORIZONTAL_TYPES = [
+        "top_edge",
+        "bottom_edge",
+        "code_top_edge",
+        "code_bottom_edge",
+        "horizontal_rule",
+    ]
+    VERTICAL_TYPES = [
+        "left_edge",
+        "right_edge",
+        "block_quote",
+        "code_left_edge",
+        "code_right_edge",
+    ]
+
     @staticmethod
     def get_justify(code: str) -> Justify1D:
         """
@@ -623,6 +672,38 @@ class Feature1D(Feature):
         if self.direction == Direction.VERTICAL:
             tiled = tiled.transpose(Image.ROTATE_270)
         return tiled
+
+    @classmethod
+    def import_(cls, json_body: JSON, theme_directory: typing.Optional[str] = None):
+        if not isinstance(json_body, dict):
+            raise ValidationError(
+                f"JSON body for Feature should be a dict, not {json_body.__class__.__name__}",
+                ValidationError.ErrorCode.WRONG_TYPE,
+            )
+        asset = AssetResource.import_(json_body, theme_directory)
+        justify = json_body.get("justify", "center")
+        if not isinstance(justify, str):
+            raise ValidationError(
+                f"JSON body for Feature justify should be a string, not {justify.__class__.__name__}",
+                ValidationError.ErrorCode.WRONG_TYPE,
+            )
+        overrides = json_body.get("overrides", [])
+        if not isinstance(overrides, list):
+            raise ValidationError(
+                f"JSON body for Feature overrides should be a list, not {overrides.__class__.__name__}",
+                ValidationError.ErrorCode.WRONG_TYPE,
+            )
+
+        overrides = [Feature1DOverride.import_(o, theme_directory) for o in overrides]
+
+        feature = check_feature(json_body, cls.FEATURE_TYPES)
+        if feature in cls.HORIZONTAL_TYPES:
+            direction = Direction.HORIZONTAL
+        elif feature in cls.VERTICAL_TYPES:
+            direction = Direction.VERTICAL
+        else:
+            raise ValueError(f"Unknown direction on feature type {feature} - report this as a bug!")
+        return cls(asset, justify, direction, overrides)
 
 
 if __name__ == "__main__":
