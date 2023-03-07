@@ -3,8 +3,12 @@ import typing
 import pytest
 from PIL import Image
 
-from pixelscribe.asset_resource import (AssetResource, Feature2D,
-                                        Feature2DOverride, Justify2D)
+from pixelscribe.asset_resource import (
+    AssetResource,
+    Feature2D,
+    Feature2DOverride,
+    Justify2D,
+)
 
 verbose = {
     "top left": (Justify2D.X.LEFT, Justify2D.Y.TOP),

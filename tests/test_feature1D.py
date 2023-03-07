@@ -4,8 +4,7 @@ from typing import Dict
 import pytest
 from PIL import Image
 
-from pixelscribe.asset_resource import (AssetResource, Direction, Feature1D,
-                                        Justify1D)
+from pixelscribe.asset_resource import AssetResource, Direction, Feature1D, Justify1D
 
 all_anchors = {
     "start": Justify1D.START,
