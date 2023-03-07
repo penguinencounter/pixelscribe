@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Union
 
 
 class ValidationError(ValueError):
@@ -7,7 +8,7 @@ class ValidationError(ValueError):
         WRONG_TYPE = 2
         INVALID_VALUE = 3
 
-    def __init__(self, message: str, error_code: int | ErrorCode = -1):
+    def __init__(self, message: str, error_code: Union[int, ErrorCode] = -1):
         if isinstance(error_code, ValidationError.ErrorCode):
             error_code = error_code.value
         super().__init__(

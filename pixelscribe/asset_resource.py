@@ -3,6 +3,7 @@ import os
 import os.path
 import re
 import typing
+from typing import Union
 
 from PIL import Image
 
@@ -395,7 +396,7 @@ class Feature2DOverride(FeatureOverride):
                 f"FeatureOverride index should be a list of ints. (provided: {index})",
                 ValidationError.ErrorCode.WRONG_TYPE,
             )
-        index = typing.cast(typing.List[int | float], index)
+        index = typing.cast(typing.List[Union[int, float]], index)
         return cls(asset, int(index[0]), int(index[1]))
 
 

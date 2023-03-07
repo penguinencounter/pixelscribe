@@ -2,6 +2,7 @@ import random
 
 import pytest
 from PIL import Image
+from typing import Dict
 
 from pixelscribe.asset_resource import AssetResource, Direction, Feature1D, Justify1D
 
@@ -59,7 +60,7 @@ def rng_odd_size() -> int:
 @pytest.mark.parametrize("pool", [i16, i13])
 @pytest.mark.parametrize("size", [20, 19])
 def test_rendering(
-    anchor: str, direction: Direction, pool: dict[Direction, Image.Image], size: int
+    anchor: str, direction: Direction, pool: Dict[Direction, Image.Image], size: int
 ):
     feature = Feature1D(AssetResource.from_image(pool[direction]), anchor, direction)
     image = feature.tile(size)
