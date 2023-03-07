@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11']
-    name: Test and release
+    name: Test
     runs-on: ubuntu-latest
 
     steps:
@@ -43,15 +43,15 @@ jobs:
         run: npm run check
       - name: Check formatting
         run: poetry run black --check pixelscribe tests
-      - name: Release
-        if: |
-          github.repository == 'FIXME/FIXME'
-          && github.event_name == 'push'
-          && github.ref == 'refs/heads/main'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "action@github.com"
-          poetry run semantic-release publish -v DEBUG -D commit_author="github-actions <action@github.com>"
+#      - name: Release
+#        if: |
+#          github.repository == 'FIXME/FIXME'
+#          && github.event_name == 'push'
+#          && github.ref == 'refs/heads/main'
+#        env:
+#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+#        run: |
+#          git config --global user.name "github-actions"
+#          git config --global user.email "action@github.com"
+#          poetry run semantic-release publish -v DEBUG -D commit_author="github-actions <action@github.com>"
