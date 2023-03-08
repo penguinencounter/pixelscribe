@@ -1,6 +1,8 @@
 import os
 import os.path
+import re
 import typing
+from enum import Enum
 
 from PIL import Image
 
@@ -62,6 +64,54 @@ def check_feature(json_body: JSONObject, allowed: typing.List[str]) -> str:
             ValidationError.ErrorCode.INVALID_VALUE,
         )
     return feature
+
+
+_JustifyXType = typing.TypeVar("_JustifyXType", bound=Enum)
+_JustifyYType = typing.TypeVar("_JustifyYType", bound=Enum)
+
+
+def get_justify(
+    code: str,
+    one_word: typing.Dict[str, typing.Tuple[str, str]],
+    x_set: typing.Dict[str, _JustifyXType],
+    y_set: typing.Dict[str, _JustifyYType],
+) -> typing.Tuple[_JustifyXType, _JustifyYType]:
+    """
+    Get the justification enums from a justification code.
+    Test coverage @ tests/test_feature2D.py
+
+    @param code: string like "top left" or similar
+    @param one_word: dict of 1-word codes to (x str alias, y str alias)
+    @param x_set: dict of x codes to x justify
+    @param y_set: dict of y codes to y justify
+    @return: (x justify, y justify)
+    """
+    words = re.findall(r"(?:^|(?<=[^A-Za-z0-9]))(\w+)(?=[^A-Za-z0-9]|$)", code.lower())
+    if 1 < len(words) > 2:
+        raise ValidationError(
+            f"Invalid justify code: {code}; must be 1 or 2 words, got {len(words)}",
+            ValidationError.ErrorCode.INVALID_VALUE,
+        )
+    if len(words) == 1:
+        if words[0] in one_word:
+            words = one_word[words[0]]
+        else:
+            raise ValidationError(
+                f"Invalid justify code: {code}; the 1-word code '{words[0]}' is not supported",
+                ValidationError.ErrorCode.INVALID_VALUE,
+            )
+    if words[1] not in x_set:
+        raise ValidationError(
+            f"Invalid justify code: {code}; the second word '{words[1]}' is not a supported x justification",
+            ValidationError.ErrorCode.INVALID_VALUE,
+        )
+    if words[0] not in y_set:
+        raise ValidationError(
+            f"Invalid justify code: {code}; the first word '{words[0]}' is not a supported y justification",
+            ValidationError.ErrorCode.INVALID_VALUE,
+        )
+    justify = x_set[words[1]], y_set[words[0]]
+    return justify
 
 
 shared_asset_cache: typing.Dict[str, Image.Image] = {}

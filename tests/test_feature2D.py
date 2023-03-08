@@ -3,7 +3,7 @@ import typing
 import pytest
 from PIL import Image
 
-from pixelscribe.asset_resource import AssetResource
+from pixelscribe.asset_resource import AssetResource, get_justify
 from pixelscribe.feature_2d import Feature2D, Feature2DOverride, Justify2D
 
 verbose = {
@@ -53,7 +53,12 @@ override_32 = Feature2DOverride(dummy_image_32, 0, 0)
 
 @pytest.mark.parametrize("anchor,expected", all_anchors.items())
 def test_anchor_parsing(anchor: str, expected: typing.Tuple[Justify2D.X, Justify2D.Y]):
-    assert Feature2D.get_justify(anchor) == expected
+    assert (
+        get_justify(
+            anchor, Justify2D.one_word_aliases, Justify2D.x_word, Justify2D.y_word
+        )
+        == expected
+    )
 
 
 @pytest.mark.parametrize("anchor,expected", all_anchors.items())

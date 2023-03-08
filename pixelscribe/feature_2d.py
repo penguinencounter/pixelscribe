@@ -1,5 +1,4 @@
 import enum
-import re
 import typing
 from typing import Union
 
@@ -12,6 +11,7 @@ from pixelscribe import (
     FeatureOverride,
     ValidationError,
     check_feature,
+    get_justify,
     next_multiple,
     odd,
 )
@@ -94,43 +94,6 @@ class Feature2DOverride(FeatureOverride):
 class Feature2D(Feature):
     FEATURE_TYPES = ["background", "code_background"]
 
-    @staticmethod
-    def get_justify(code: str) -> typing.Tuple[Justify2D.X, Justify2D.Y]:
-        """
-        Get the justification enums from a justification code.
-        Test coverage @ tests/test_feature2D.py
-        :param code: string like "top left" or similar
-        :return: (x justify, y justify)
-        """
-        words = re.findall(
-            r"(?:^|(?<=[^A-Za-z0-9]))(\w+)(?=[^A-Za-z0-9]|$)", code.lower()
-        )
-        if 1 < len(words) > 2:
-            raise ValidationError(
-                f"Invalid justify code: {code}; must be 1 or 2 words, got {len(words)}",
-                ValidationError.ErrorCode.INVALID_VALUE,
-            )
-        if len(words) == 1:
-            if words[0] in Justify2D.one_word_aliases:
-                words = Justify2D.one_word_aliases[words[0]]
-            else:
-                raise ValidationError(
-                    f"Invalid justify code: {code}; the 1-word code '{words[0]}' is not supported",
-                    ValidationError.ErrorCode.INVALID_VALUE,
-                )
-        if words[1] not in Justify2D.x_word:
-            raise ValidationError(
-                f"Invalid justify code: {code}; the second word '{words[1]}' is not a supported x justification",
-                ValidationError.ErrorCode.INVALID_VALUE,
-            )
-        if words[0] not in Justify2D.y_word:
-            raise ValidationError(
-                f"Invalid justify code: {code}; the first word '{words[0]}' is not a supported y justification",
-                ValidationError.ErrorCode.INVALID_VALUE,
-            )
-        justify = Justify2D.x_word[words[1]], Justify2D.y_word[words[0]]
-        return justify
-
     def __init__(
         self,
         asset: AssetResource,
@@ -141,7 +104,9 @@ class Feature2D(Feature):
         self._overrides = {}
         self.set_overrides(overrides)
         if isinstance(justify, str):
-            justify = self.get_justify(justify)
+            justify = get_justify(
+                justify, Justify2D.one_word_aliases, Justify2D.x_word, Justify2D.y_word
+            )
         self.justifyX, self.justifyY = justify
 
     def set_overrides(self, overrides: typing.Optional[typing.List[Feature2DOverride]]):
