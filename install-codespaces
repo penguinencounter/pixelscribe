@@ -11,14 +11,14 @@ act() {
     npm i
 }
 act
-source $(poetry env info --path)/bin/activate
+source "$(poetry env info --path)/bin/activate"
 act
 deactivate
 
 RESTART_SHELL=0
-grep -q "alias activate=" "$HOME/.bashrc"
-if [[ $? -ne 0 ]]; then
+if grep -q "alias activate=" "$HOME/.bashrc"; then
     echo "Installing .bashrc..."
+    # shellcheck disable=SC2016
     printf '\nalias activate='"'"'source $(poetry env info --path)/bin/activate'"'"'\n' >> "$HOME/.bashrc"
     RESTART_SHELL=1
 else
@@ -28,7 +28,7 @@ fi
 echo "Installed."
 if [[ $RESTART_SHELL -eq 1 ]]; then
     if [[ $I != 1 ]]; then
-        read -n 1 -p "Restart shell to apply changes? [Yn]" RESP
+        read -rn 1 -p "Restart shell to apply changes? [Yn]" RESP
         if [[ $RESP != "n" ]]; then
             echo "Restarting..."
             echo "Run 'activate' to activate your Poetry environment"
