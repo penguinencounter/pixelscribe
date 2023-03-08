@@ -8,7 +8,9 @@ from typing import Any, Callable, Dict, List, NamedTuple, Tuple, cast
 
 import pytest
 
-from pixelscribe.asset_resource import AssetResource, Feature, Feature1D, Feature2D
+from pixelscribe.asset_resource import AssetResource, Feature
+from pixelscribe.feature_1d import Feature1D
+from pixelscribe.feature_2d import Feature2D
 from pixelscribe.types import JSON, JSONObject
 
 
