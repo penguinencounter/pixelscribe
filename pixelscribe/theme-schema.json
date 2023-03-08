@@ -222,16 +222,12 @@
     "2d_anchor_addons": {
       "enum": [
         "inside-top left",
-        "inside-top center",
         "inside-top right",
         "inside-bottom left",
-        "inside-bottom center",
         "inside-bottom right",
         "top inside-left",
-        "center inside-left",
         "right inside-left",
         "top inside-right",
-        "center inside-right",
         "right inside-right"
       ]
     },
@@ -253,7 +249,10 @@
             {
               "properties": {
                 "mode": {
-                  "const": "outside"
+                  "enum": [
+                    "outside",
+                    "edge"
+                  ]
                 },
                 "anchor": {
                   "anyOf": [
@@ -263,22 +262,15 @@
                     {
                       "$ref": "#/definitions/2d_anchor_addons"
                     }
-                  ]
+                  ],
+                  "not": {
+                    "enum": [
+                      "center center",
+                      "center"
+                    ]
+                  }
                 }
               }
-            },
-            {
-              "properties": {
-                "mode": {
-                  "const": "edge"
-                },
-                "anchor": {
-                  "$ref": "#/definitions/2d_justify"
-                }
-              },
-              "required": [
-                "anchor"
-              ]
             },
             {
               "properties": {

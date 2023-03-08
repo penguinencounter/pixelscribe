@@ -65,5 +65,10 @@
     }
   ],
   "overlays": [
+    {
+      "source": "xyz.png",
+      "anchor": "center",
+      "mode": "outside"
+    }
   ]
 }
