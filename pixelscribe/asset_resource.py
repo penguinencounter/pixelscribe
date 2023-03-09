@@ -86,7 +86,9 @@ def get_justify(
     @param y_set: dict of y codes to y justify
     @return: (x justify, y justify)
     """
-    words = re.findall(r"(?:^|(?<=[^A-Za-z0-9]))(\w+)(?=[^A-Za-z0-9]|$)", code.lower())
+    words = re.findall(
+        r"(?:^|(?<=[^A-Za-z0-9\-]))([\w\-]+)(?=[^A-Za-z0-9\-]|$)", code.lower()
+    )
     if 1 < len(words) > 2:
         raise ValidationError(
             f"Invalid justify code: {code}; must be 1 or 2 words, got {len(words)}",

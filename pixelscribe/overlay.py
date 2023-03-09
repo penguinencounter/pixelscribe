@@ -16,8 +16,8 @@ class Anchor2D:
         LEFT = "left", None
         CENTER = "center", None
         RIGHT = "right", None
-        INSIDE_LEFT = "inside-left", ("outside",)
-        INSIDE_RIGHT = "inside-right", ("outside",)
+        INSIDE_LEFT = "inside-left", ("outside", "edge")
+        INSIDE_RIGHT = "inside-right", ("outside", "edge")
 
         def __repr__(self):
             return f"{self.value[0]}"

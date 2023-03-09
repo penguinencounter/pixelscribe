@@ -6,6 +6,7 @@ from PIL import Image
 
 from pixelscribe.asset_resource import AssetResource
 from pixelscribe.feature_1d import Direction, Feature1D, Justify1D
+from tests.bench import asset_resource_horizontal_16, i13h, i13v, i16h, i16v
 
 all_anchors = {
     "start": Justify1D.START,
@@ -16,21 +17,12 @@ all_anchors = {
     "top": Justify1D.START,
     "bottom": Justify1D.END,
 }
-i16h = Image.new("RGBA", (4, 16), (255, 0, 0, 0))
-i16h.paste(Image.new("RGBA", (2, 14), (0, 0, 0, 128)), (1, 1))
-asset_16 = AssetResource.from_image(i16h)
-i16v = Image.new("RGBA", (16, 4), (255, 0, 0, 0))
-i16v.paste(Image.new("RGBA", (14, 2), (0, 0, 0, 128)), (1, 1))
 
 i16 = {
     Direction.HORIZONTAL: i16h,
     Direction.VERTICAL: i16v,
 }
 
-i13h = Image.new("RGBA", (3, 13), (255, 0, 0, 0))
-i13h.paste(Image.new("RGBA", (1, 11), (0, 0, 0, 128)), (1, 1))
-i13v = Image.new("RGBA", (13, 3), (255, 0, 0, 0))
-i13v.paste(Image.new("RGBA", (11, 1), (0, 0, 0, 128)), (1, 1))
 
 i13 = {
     Direction.HORIZONTAL: i13h,
@@ -45,7 +37,7 @@ def test_anchor_parsing(anchor: str, expected: Justify1D):
 
 @pytest.mark.parametrize("anchor,expected", all_anchors.items())
 def test_initializer(anchor: str, expected: Justify1D):
-    assert Feature1D(asset_16, anchor).justify == expected
+    assert Feature1D(asset_resource_horizontal_16, anchor).justify == expected
 
 
 def rng_even_size() -> int:
