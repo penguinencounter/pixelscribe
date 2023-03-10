@@ -1,7 +1,7 @@
 import enum
 import typing
 
-from pixelscribe import AssetResource, ValidationError, get_justify
+from pixelscribe import JSON, AssetResource, ValidationError, get_justify
 
 
 class Anchor2D:
@@ -168,3 +168,13 @@ class Overlay:
             if not valid[0]:
                 raise ValidationError(valid[1], ValidationError.ErrorCode.INVALID_VALUE)
             self.anchor = anchor
+
+    @classmethod
+    def import_(cls, json_body: JSON, theme_directory: typing.Optional[str] = None):
+        if not isinstance(json_body, dict):
+            raise ValidationError(
+                f"JSON body for Overlay should be a dict, not {json_body.__class__.__name__}",
+                ValidationError.ErrorCode.WRONG_TYPE,
+            )
+        # TEMPORARY: TODO: remove ignore
+        asset = AssetResource.import_(json_body, theme_directory)  # type: ignore

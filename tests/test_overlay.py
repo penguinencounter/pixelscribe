@@ -1,8 +1,9 @@
+import itertools
 import typing
 
 import pytest
 
-from pixelscribe import get_justify
+from pixelscribe import ValidationError, get_justify
 from pixelscribe.overlay import Anchor2D, Overlay
 from tests.bench import asset_resource_16
 
@@ -48,9 +49,12 @@ always_valid = {
     "bottom left": (Anchor2D.X.LEFT, Anchor2D.Y.BOTTOM),
     "bottom center": (Anchor2D.X.CENTER, Anchor2D.Y.BOTTOM),
     "bottom right": (Anchor2D.X.RIGHT, Anchor2D.Y.BOTTOM),
+    "left": (Anchor2D.X.LEFT, Anchor2D.Y.CENTER),
+    "right": (Anchor2D.X.RIGHT, Anchor2D.Y.CENTER),
+    "top": (Anchor2D.X.CENTER, Anchor2D.Y.TOP),
+    "bottom": (Anchor2D.X.CENTER, Anchor2D.Y.BOTTOM),
 }
-_edge_and_outside = {
-    **always_valid,
+_edge_and_outside_only = {
     "inside-top right": (Anchor2D.X.RIGHT, Anchor2D.Y.INSIDE_TOP),
     "inside-top left": (Anchor2D.X.LEFT, Anchor2D.Y.INSIDE_TOP),
     "inside-bottom right": (Anchor2D.X.RIGHT, Anchor2D.Y.INSIDE_BOTTOM),
@@ -60,14 +64,34 @@ _edge_and_outside = {
     "bottom inside-right": (Anchor2D.X.INSIDE_RIGHT, Anchor2D.Y.BOTTOM),
     "bottom inside-left": (Anchor2D.X.INSIDE_LEFT, Anchor2D.Y.BOTTOM),
 }
+_edge_and_outside = {
+    **always_valid,
+    **_edge_and_outside_only,
+}
 modes = {
     Anchor2D.AnchorMode.INSIDE: {
         **always_valid,
         "center center": (Anchor2D.X.CENTER, Anchor2D.Y.CENTER),
+        "center": (Anchor2D.X.CENTER, Anchor2D.Y.CENTER),
     },
     Anchor2D.AnchorMode.EDGE: _edge_and_outside,
     Anchor2D.AnchorMode.OUTSIDE: _edge_and_outside,
 }
+
+invalid = [
+    *list(
+        itertools.product((Anchor2D.AnchorMode.INSIDE,), _edge_and_outside_only.keys())
+    ),
+    *list(
+        itertools.product(
+            (Anchor2D.AnchorMode.EDGE, Anchor2D.AnchorMode.OUTSIDE),
+            [
+                "center center",
+                "center",
+            ],
+        )
+    ),
+]
 paired: typing.Dict[
     typing.Tuple[Anchor2D.AnchorMode, str], typing.Tuple[Anchor2D.X, Anchor2D.Y]
 ] = {}
@@ -84,3 +108,9 @@ def test_initializer(
     assert (
         Overlay(asset_resource_16, anchor_mode=args[0], anchor=args[1]).anchor == expect
     )
+
+
+@pytest.mark.parametrize("args", invalid)
+def test_invalid_initializer(args: typing.Tuple[Anchor2D.AnchorMode, str]):
+    with pytest.raises(ValidationError):
+        Overlay(asset_resource_16, anchor_mode=args[0], anchor=args[1])

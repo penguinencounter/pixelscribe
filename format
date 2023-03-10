@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set +e
+
+poetry run black pixelscribe tests
+poetry run isort pixelscribe tests
+npx pyright
