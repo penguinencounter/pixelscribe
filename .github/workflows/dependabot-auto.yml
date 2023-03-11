@@ -15,6 +15,7 @@ jobs:
       - uses: actions/checkout@v3
       - shell: bash
         run: |
+          set +e
           AUTHOR=$(gh pr view $PR_NO --json author --jq '.author.login')
           echo $AUTHOR | grep -E '^(apps/)?dependabot(-preview)?(\[bot\])?$' >/dev/null
           if [[ $? -eq 0 ]]; then
