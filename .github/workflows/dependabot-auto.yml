@@ -18,7 +18,7 @@ jobs:
           set +e
           AUTHOR=$(gh pr view $PR_NO --json author --jq '.author.login')
           echo "author is $AUTHOR"
-          echo $AUTHOR | grep -E '^(apps/)?dependabot(-preview)?(\[bot\])?$'
+          echo $AUTHOR | grep -E '^(apps?/)?dependabot(-preview)?(\[bot\])?$'
           if [[ $? -eq 0 ]]; then
             echo "Author is dependabot, requesting merge"
             gh pr comment $PR_NO -b "@dependabot merge"
