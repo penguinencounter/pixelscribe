@@ -2,14 +2,26 @@ name: auto-merge
 
 on:
   pull_request:
+    types: [opened, reopened]
+
+permissions:
+  pull_request: write
 
 jobs:
   test:
     name: Auto-merge minor and patch updates
     runs-on: ubuntu-18.04
     steps:
-      - uses: koj-co/dependabot-pr-action@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          merge-minor: true
-          merge-patch: true
+      - shell: bash
+        run: |
+          AUTHOR=$(gh pr view $PR_NO --json author --jq '.author.login')
+          echo $AUTHOR | grep -E '^(apps/)?dependabot(-preview)?(\[bot\])?$' >/dev/null
+          if [[ $? -eq 0 ]]; then
+            echo "Author is dependabot, requesting merge"
+            gh pr comment $PR_NO -b "@dependabot merge"
+          else
+            echo "Author is not dependabot, ignoring"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NO: ${{ github.event.pull_request.number }}
