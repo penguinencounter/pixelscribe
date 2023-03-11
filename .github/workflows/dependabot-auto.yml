@@ -12,6 +12,7 @@ jobs:
     name: Auto-merge minor and patch updates
     runs-on: ubuntu-18.04
     steps:
+      - using: actions/checkout@v3
       - shell: bash
         run: |
           AUTHOR=$(gh pr view $PR_NO --json author --jq '.author.login')
