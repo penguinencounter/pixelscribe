@@ -11,6 +11,7 @@ import pytest
 from pixelscribe.asset_resource import AssetResource, Feature
 from pixelscribe.feature_1d import Feature1D
 from pixelscribe.feature_2d import Feature2D
+from pixelscribe.overlay import Overlay
 from pixelscribe.types import JSON, JSONObject
 
 
@@ -118,3 +119,9 @@ def test_import_feature2d(test_data: JsonTestCase):
 def test_import_feature1d(test_data: JsonTestCase):
     dump_test_case(test_data)
     run_test(test_data, Feature1D.import_)
+
+
+@pytest.mark.parametrize("test_data", compiled_tests["overlay.json"])
+def test_import_overlay(test_data: JsonTestCase):
+    dump_test_case(test_data)
+    run_test(test_data, Overlay.import_)

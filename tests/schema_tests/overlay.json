@@ -1,0 +1,221 @@
+[
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {}
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "example.png"
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "example.png",
+      "mode": "inside"
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "example.png",
+      "mode": "not a real mode"
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "example.png",
+      "mode": "inside",
+      "anchor": "invalidonewordanchor"
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "example.png",
+      "mode": "invalidtwo wordanchor"
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "example.png",
+      "mode": "inside",
+      "anchor": "inside-top left"
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "example.png",
+      "mode": "inside",
+      "anchor": "top inside-left"
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "example.png",
+      "mode": "outside",
+      "anchor": "inside-top inside-left"
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "example.png",
+      "mode": "outside",
+      "anchor": "center"
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "ValidationError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "example.png",
+      "mode": "outside",
+      "anchor": "inside-top center"
+    }
+  },
+  {
+    "expect": {
+      "ok": false,
+      "errorType": "FileNotFoundError"
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "test": {
+      "source": "not_a_real_file.png",
+      "mode": "inside",
+      "anchor": "top left"
+    }
+  },
+  {
+    "expect": {
+      "ok": true
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "iterate": {
+      "anchor": [
+        "top left",
+        "top center",
+        "top right",
+        "center left",
+        "center center",
+        "center right",
+        "bottom left",
+        "bottom center",
+        "bottom right"
+      ]
+    },
+    "test": {
+      "source": "example.png",
+      "mode": "inside"
+    }
+  },
+  {
+    "expect": {
+      "ok": true
+    },
+    "kwargs": {
+      "theme_directory": "tests/schema_tests"
+    },
+    "iterate": {
+      "anchor": [
+        "top left",
+        "top center",
+        "top right",
+        "center left",
+        "center right",
+        "bottom left",
+        "bottom center",
+        "bottom right",
+        "inside-top left",
+        "inside-top right",
+        "inside-bottom left",
+        "inside-bottom right",
+        "top inside-left",
+        "top inside-right",
+        "bottom inside-left",
+        "bottom inside-right"
+      ],
+      "mode": [
+        "edge",
+        "outside"
+      ]
+    },
+    "test": {
+      "source": "example.png"
+    }
+  }
+]

@@ -43,12 +43,14 @@ def check_feature(json_body: JSONObject, allowed: typing.List[str]) -> str:
         raise ValidationError(
             'Feature(s) require a "feature".',
             ValidationError.ErrorCode.MISSING_VALUE,
+            "",
         )
     feature = json_body["feature"]
     if not isinstance(feature, str):
         raise ValidationError(
             f'Feature(s) require a "feature" of type string, not {feature.__class__.__name__}.',
             ValidationError.ErrorCode.WRONG_TYPE,
+            ".feature",
         )
 
     if feature not in allowed:
@@ -62,6 +64,7 @@ def check_feature(json_body: JSONObject, allowed: typing.List[str]) -> str:
         raise ValidationError(
             msg,
             ValidationError.ErrorCode.INVALID_VALUE,
+            ".feature",
         )
     return feature
 
@@ -184,18 +187,21 @@ class AssetResource:
             raise ValidationError(
                 f"JSON body for AssetResource should be a dict, not {json_body.__class__.__name__}",
                 ValidationError.ErrorCode.WRONG_TYPE,
+                "",
             )
         # required: source
         if "source" not in json_body:
             raise ValidationError(
                 'AssetResource(s) require a "source".',
                 ValidationError.ErrorCode.MISSING_VALUE,
+                "",
             )
         source = json_body["source"]  # relative to theme file
         if not isinstance(source, str):
             raise ValidationError(
                 f"JSON body for AssetResource source should be a string, not {source.__class__.__name__}",
                 ValidationError.ErrorCode.WRONG_TYPE,
+                ".source",
             )
         # IF there is a crop, it must be exactly four integers.
         if "crop" in json_body:
@@ -204,14 +210,16 @@ class AssetResource:
                 raise ValidationError(
                     f"JSON body for AssetResource crop should be a list, not {crop.__class__.__name__}",
                     ValidationError.ErrorCode.WRONG_TYPE,
+                    ".crop",
                 )
             if len(crop) != 4:
                 raise ValidationError(
                     f'"crop" must be exactly 4 integers or omitted, got {len(crop)} instead',
                     ValidationError.ErrorCode.INVALID_VALUE,
+                    ".crop",
                 )
             intermediate: typing.List[int] = []
-            for crop_att in crop:
+            for i, crop_att in enumerate(crop):
                 try:
                     assert (
                         isinstance(crop_att, float) and crop_att.is_integer()
@@ -222,6 +230,7 @@ class AssetResource:
                     raise ValidationError(
                         f"Cropping values must be integers that are at least 0. (got {crop_att})",
                         ValidationError.ErrorCode.INVALID_VALUE,
+                        f".crop[{i}]",
                     )
             # noinspection PyTypeChecker
             new_crop: typing.Optional[typing.Tuple[int, int, int, int]] = tuple(
@@ -269,12 +278,14 @@ class Feature:
             raise ValidationError(
                 f"JSON body for Feature should be a dict, not {json_body.__class__.__name__}",
                 ValidationError.ErrorCode.WRONG_TYPE,
+                "",
             )
         asset = AssetResource.import_(json_body, theme_directory)
         if "feature" not in json_body:
             raise ValidationError(
                 'Feature(s) require a "feature".',
                 ValidationError.ErrorCode.MISSING_VALUE,
+                ".feature",
             )
         check_feature(json_body, cls.FEATURE_TYPES)
 

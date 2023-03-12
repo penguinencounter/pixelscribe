@@ -9,6 +9,7 @@ from pixelscribe import (
     AssetResource,
     Feature,
     FeatureOverride,
+    JSONTraceable,
     ValidationError,
     check_feature,
     get_justify,
@@ -59,33 +60,37 @@ class Feature2DOverride(FeatureOverride):
     def import_(cls, json_body: JSON, theme_directory: typing.Optional[str] = None):
         if not isinstance(json_body, dict):
             raise ValidationError(
-                f"JSON body for FeatureOverride should be a dict, not {json_body.__class__.__name__}",
+                f"JSON body for Feature2DOverride should be a dict, not {json_body.__class__.__name__}",
                 ValidationError.ErrorCode.WRONG_TYPE,
+                "",
             )
         asset = AssetResource.import_(json_body, theme_directory)
         if "index" not in json_body:
             raise ValidationError(
-                'FeatureOverride(s) require a "index".',
+                'Feature2DOverride(s) require a "index".',
                 ValidationError.ErrorCode.MISSING_VALUE,
+                "",
             )
         index = json_body["index"]
         if not isinstance(index, list):
             raise ValidationError(
-                f"FeatureOverride index should be a list, not {index.__class__.__name__}",
+                f"Feature2DOverride index should be a list, not {index.__class__.__name__}",
                 ValidationError.ErrorCode.WRONG_TYPE,
+                ".index",
             )
         if len(index) != 2:
             raise ValidationError(
-                f"FeatureOverride index should be a list of length 2, not length {len(index)}",
+                f"Feature2DOverride index should be a list of length 2, not length {len(index)}",
                 ValidationError.ErrorCode.WRONG_TYPE,
+                ".index",
             )
-        if not all(
-            isinstance(i, int) or (isinstance(i, float) and i.is_integer())
-            for i in index
-        ):
+        for i, x in enumerate(index):
+            if isinstance(x, int) or (isinstance(x, float) and x.is_integer()):
+                continue
             raise ValidationError(
-                f"FeatureOverride index should be a list of ints. (provided: {index})",
+                f"Feature2DOverride index should be a list of ints. Index {i} is {x}, which is not an integer.",
                 ValidationError.ErrorCode.WRONG_TYPE,
+                f".index[{i}]",
             )
         index = typing.cast(typing.List[Union[int, float]], index)
         return cls(asset, int(index[0]), int(index[1]))
@@ -104,9 +109,16 @@ class Feature2D(Feature):
         self._overrides = {}
         self.set_overrides(overrides)
         if isinstance(justify, str):
-            justify = get_justify(
-                justify, Justify2D.one_word_aliases, Justify2D.x_word, Justify2D.y_word
-            )
+            try:
+                justify = get_justify(
+                    justify,
+                    Justify2D.one_word_aliases,
+                    Justify2D.x_word,
+                    Justify2D.y_word,
+                )
+            except JSONTraceable as e:
+                e.extend_parent_key("justify")
+                raise e
         self.justifyX, self.justifyY = justify
 
     def set_overrides(self, overrides: typing.Optional[typing.List[Feature2DOverride]]):
@@ -182,25 +194,35 @@ class Feature2D(Feature):
     def import_(cls, json_body: JSON, theme_directory: typing.Optional[str] = None):
         if not isinstance(json_body, dict):
             raise ValidationError(
-                f"JSON body for Feature should be a dict, not {json_body.__class__.__name__}",
+                f"JSON body for Feature2D should be a dict, not {json_body.__class__.__name__}",
                 ValidationError.ErrorCode.WRONG_TYPE,
+                "",
             )
         asset = AssetResource.import_(json_body, theme_directory)
         justify = json_body.get("justify", "top left")
         if not isinstance(justify, str):
             raise ValidationError(
-                f"JSON body for Feature justify should be a string, not {justify.__class__.__name__}",
+                f"JSON body for Feature2D justify should be a string, not {justify.__class__.__name__}",
                 ValidationError.ErrorCode.WRONG_TYPE,
+                ".justify",
             )
-        overrides = json_body.get("overrides", [])
-        if not isinstance(overrides, list):
+        raw_overrides = json_body.get("overrides", [])
+        if not isinstance(raw_overrides, list):
             raise ValidationError(
-                f"JSON body for Feature overrides should be a list, not {overrides.__class__.__name__}",
+                f"JSON body for Feature2D overrides should be a list, not {raw_overrides.__class__.__name__}",
                 ValidationError.ErrorCode.WRONG_TYPE,
+                ".overrides",
             )
 
-        # might throw, OK
-        overrides = [Feature2DOverride.import_(o, theme_directory) for o in overrides]
+        overrides: typing.List[Feature2DOverride] = []
+        for i, o in enumerate(raw_overrides):
+            try:
+                overrides.append(Feature2DOverride.import_(o, theme_directory))
+            except JSONTraceable as e:
+                # re-contextualize
+                e.extend_parent_index(i)
+                e.extend_parent_key("overrides")
+                raise e
 
         check_feature(json_body, cls.FEATURE_TYPES)
 
