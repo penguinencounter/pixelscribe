@@ -208,8 +208,8 @@ class Feature1D(Feature):
                 overrides.append(Feature1DOverride.import_(o, theme_directory))
             except JSONTraceable as e:
                 # re-contextualize
-                e.extend_parent_index(i)
-                e.extend_parent_key("overrides")
+                e.extend(i)
+                e.extend("overrides")
                 raise e
 
         feature = check_feature(json_body, cls.FEATURE_TYPES)

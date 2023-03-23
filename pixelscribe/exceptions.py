@@ -1,3 +1,4 @@
+import typing
 from enum import Enum
 from typing import Tuple, Union
 
@@ -14,15 +15,23 @@ class JSONTraceable(Exception):
     Base class for exceptions that can be traced back to JSON.
     """
 
-    def __init__(self, message: str, json_path: str = ""):
+    def __init__(
+        self,
+        message: str,
+        json_path: typing.Union[str, typing.List[typing.Union[str, int]]] = "",
+    ):
         super().__init__(message)
-        self.json_path = json_path
+        if isinstance(json_path, str):
+            self.json_path = [json_path]
+        elif isinstance(json_path, list):
+            self.json_path = json_path
+        else:
+            raise TypeError(
+                f"JSON path should be a string or a list, not {type(json_path).__name__}"
+            )
 
-    def extend_parent_key(self, key: str):
-        self.json_path = f".{key}{self.json_path}"
-
-    def extend_parent_index(self, index: int):
-        self.json_path = f"[{index}]{self.json_path}"
+    def extend(self, key: typing.Union[str, int]):
+        self.json_path.insert(0, key)
 
 
 class ValidationError(JSONTraceable):

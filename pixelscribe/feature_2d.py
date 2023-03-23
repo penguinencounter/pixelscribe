@@ -117,7 +117,7 @@ class Feature2D(Feature):
                     Justify2D.y_word,
                 )
             except JSONTraceable as e:
-                e.extend_parent_key("justify")
+                e.extend("justify")
                 raise e
         self.justifyX, self.justifyY = justify
 
@@ -220,8 +220,8 @@ class Feature2D(Feature):
                 overrides.append(Feature2DOverride.import_(o, theme_directory))
             except JSONTraceable as e:
                 # re-contextualize
-                e.extend_parent_index(i)
-                e.extend_parent_key("overrides")
+                e.extend(i)
+                e.extend("overrides")
                 raise e
 
         check_feature(json_body, cls.FEATURE_TYPES)

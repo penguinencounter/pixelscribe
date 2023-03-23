@@ -149,7 +149,7 @@ class Overlay:
                     anchor, Anchor2D.one_word_aliases, Anchor2D.x_word, Anchor2D.y_word
                 )
             except JSONTraceable as e:
-                e.extend_parent_key("anchor")
+                e.extend("anchor")
                 raise e
             # validate...
             valid = Anchor2D.valid(anc[0], anc[1], self.anchor_mode)
