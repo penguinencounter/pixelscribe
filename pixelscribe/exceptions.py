@@ -1,5 +1,12 @@
 from enum import Enum
-from typing import Union
+from typing import Tuple, Union
+
+
+def line_col(source: str, index: int) -> Tuple[int, int]:
+    """
+    Return the line and column number of the given index in the source string.
+    """
+    return source.count("\n", 0, index) + 1, index - source.rfind("\n", 0, index)
 
 
 class JSONTraceable(Exception):
