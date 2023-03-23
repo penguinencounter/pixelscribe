@@ -21,9 +21,10 @@ class JSONTraceable(Exception):
         json_path: typing.Union[str, typing.List[typing.Union[str, int]]] = "",
     ):
         super().__init__(message)
+        self.json_path: typing.List[typing.Union[str, int]]
         if isinstance(json_path, str):
             self.json_path = [json_path]
-        elif isinstance(json_path, list):
+        elif isinstance(json_path, list):  # type: ignore[reportUnnecessaryIsInstance]
             self.json_path = json_path
         else:
             raise TypeError(

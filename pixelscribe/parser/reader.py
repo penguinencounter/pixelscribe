@@ -49,6 +49,9 @@ class StringStream:
     def rewind(self, by: int):
         self.seek(self.cur - by)
 
+    def eof(self):
+        return self.cur >= len(self.source)
+
 
 class FilePosStorage:
     def __init__(self):
@@ -86,6 +89,8 @@ def _check(stream: StringStream, checked_chars: str) -> bool:
 
 
 def _whitespace(stream: StringStream):
+    if stream.eof():
+        return
     regex = r"[ \n\r\t]*"
     number = re.match(regex, stream.peek())
     if number is None:
@@ -155,7 +160,10 @@ def _json_number(stream: StringStream) -> typing.Union[float, int]:
             )
         digits += int(next_c)
         while True:
-            next_c = stream.read(1)
+            next_c = stream.read(1, False)
+            if next_c == "":
+                # end of stream
+                break
             if next_c not in "0123456789":
                 stream.rewind(1)
                 break
@@ -166,13 +174,18 @@ def _json_number(stream: StringStream) -> typing.Union[float, int]:
     d = digits()
 
     def fraction() -> float:
+        if stream.eof():
+            return 0.0
         if not _take(stream, ".", False):
             return 0.0
         fraction = 0.0
         invexp = -1
         # read digits
         while True:
-            next_c = stream.read(1)
+            next_c = stream.read(1, False)
+            if next_c == "":
+                # end of stream
+                break
             if next_c not in "0123456789":
                 stream.rewind(1)
                 break
@@ -183,6 +196,8 @@ def _json_number(stream: StringStream) -> typing.Union[float, int]:
     f = fraction()
 
     def exponent() -> int:
+        if stream.eof():
+            return 0
         if not (_take(stream, "e", False) or _take(stream, "E", False)):
             return 0
         exponent = 0
@@ -191,7 +206,10 @@ def _json_number(stream: StringStream) -> typing.Union[float, int]:
             _take(stream, "+", False)  # optionally have a plus sign
         # read digits
         while True:
-            next_c = stream.read(1)
+            next_c = stream.read(1, False)
+            if next_c == "":
+                # end of stream
+                break
             if next_c not in "0123456789":
                 stream.rewind(1)
                 break
