@@ -12,7 +12,7 @@ from pixelscribe.asset_resource import AssetResource, Feature
 from pixelscribe.feature_1d import Feature1D
 from pixelscribe.feature_2d import Feature2D
 from pixelscribe.overlay import Overlay
-from pixelscribe.types import JSON, JSONObject
+from pixelscribe.parser.json_types import JSON, JSONObject
 
 
 class JsonTestCase(NamedTuple):

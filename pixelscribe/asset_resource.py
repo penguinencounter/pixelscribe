@@ -7,7 +7,7 @@ from enum import Enum
 from PIL import Image
 
 from .exceptions import ValidationError
-from .types import JSON, JSONObject
+from .parser.json_types import JSON, JSONObject
 
 
 def _normalize(path: str) -> str:
