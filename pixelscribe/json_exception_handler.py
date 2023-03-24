@@ -21,9 +21,12 @@ def handle(exception: JSONTraceable, import_data: typing.Optional[FilePosStorage
                     source, import_data.get(exception.json_path)
                 )
 
-    error_locator_header_line = (
-        f'  at {".".join(map(str, exception.json_path))}' f' in "{nice_filename}"'
+    nice_error_path = (
+        ".".join(map(str, exception.json_path))
+        if len(exception.json_path) > 0
+        else "<root object>"
     )
+    error_locator_header_line = f"  at {nice_error_path}" f' in "{nice_filename}"'
     if source:
         error_locator_header_line += f", line {line_col[0]} (column {line_col[1]})"
     result += error_locator_header_line + "\n"

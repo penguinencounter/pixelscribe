@@ -91,11 +91,7 @@ def generate_fuzzing_data(
 
 @pytest.mark.parametrize("iteration", range(1, 100))
 def test_auto_generate(iteration: int):
-    head = f"\rtest i={iteration}"
     data_s, data_t = generate_fuzzing_data(20)
-    print(head, "Generating test data", end="", flush=True)
-    print(head, end="\n", flush=True)
-    print("fuz: ", data_s)
 
     def compare(a: typing.Any, b: typing.Any) -> bool:
         OK_ERROR = 1e-6

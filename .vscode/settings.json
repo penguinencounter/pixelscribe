@@ -22,10 +22,16 @@
   "json.schemas": [
     {
       "fileMatch": [
-        "/book/*/theme.json"
+        "*/theme.json",
+        "/tests/full_themes/*.json"
       ],
       "url": "./pixelscribe/theme-schema.json"
     }
   ],
-  "python.analysis.typeCheckingMode": "basic"
+  "python.analysis.typeCheckingMode": "basic",
+  "python.testing.pytestArgs": [
+    "tests"
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }

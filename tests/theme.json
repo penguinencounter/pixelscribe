@@ -67,7 +67,7 @@
   "overlays": [
     {
       "source": "xyz.png",
-      "anchor": "center",
+      "anchor": "top left",
       "mode": "outside"
     }
   ]

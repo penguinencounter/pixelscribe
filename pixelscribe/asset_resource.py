@@ -292,7 +292,7 @@ class Feature:
         return cls(asset)
 
     @staticmethod
-    def get_feature_type(json_body: JSON):
+    def get_feature_type(json_body: JSON) -> str:
         if not isinstance(json_body, dict):
             raise ValidationError(
                 f"JSON body for Feature should be a dict, not {json_body.__class__.__name__}",
@@ -301,9 +301,15 @@ class Feature:
             )
         if "feature" not in json_body:
             raise ValidationError(
-                'Feature(s) require a "feature". (Getting feature type)',
+                'Feature(s) require a "feature". (getting feature type)',
                 ValidationError.ErrorCode.MISSING_VALUE,
                 "",
+            )
+        if not isinstance(json_body["feature"], str):
+            raise ValidationError(
+                f"JSON body for Feature feature should be a string, not {json_body['feature'].__class__.__name__} (getting feature type))",
+                ValidationError.ErrorCode.WRONG_TYPE,
+                "feature",
             )
         return json_body["feature"]
 

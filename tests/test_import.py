@@ -13,6 +13,7 @@ from pixelscribe.feature_1d import Feature1D
 from pixelscribe.feature_2d import Feature2D
 from pixelscribe.overlay import Overlay
 from pixelscribe.parser.json_types import JSON, JSONObject
+from pixelscribe.theme import Theme
 
 
 class JsonTestCase(NamedTuple):
@@ -125,3 +126,28 @@ def test_import_feature1d(test_data: JsonTestCase):
 def test_import_overlay(test_data: JsonTestCase):
     dump_test_case(test_data)
     run_test(test_data, Overlay.import_)
+
+
+def get_full_tests() -> List[Tuple[str, bool]]:
+    FULL_TEST_PATH = os.path.join("tests", "full_themes")
+    full_tests: List[Tuple[str, bool]] = []
+    for base, _, files in os.walk(FULL_TEST_PATH):
+        for f in files:
+            if not f.endswith(".json"):
+                continue
+            is_invalid = f.startswith("i_")
+            full_tests.append((os.path.join(base, f), is_invalid))
+    return full_tests
+
+
+@pytest.mark.parametrize("path, is_invalid", get_full_tests())
+def test_full_themes(path: str, is_invalid: bool):
+    def exec_target():
+        Theme.import_(path)
+
+    if is_invalid:
+        with pytest.raises(Exception) as e:
+            exec_target()
+        print(e.value)
+    else:
+        exec_target()
