@@ -9,13 +9,13 @@ from pixelscribe import (
     AssetResource,
     Feature,
     FeatureOverride,
-    JSONTraceable,
     ValidationError,
     check_feature,
     get_justify,
     next_multiple,
     odd,
 )
+from pixelscribe.contexts import JsonContext
 
 
 class Justify2D:
@@ -76,13 +76,13 @@ class Feature2DOverride(FeatureOverride):
             raise ValidationError(
                 f"Feature2DOverride index should be a list, not {index.__class__.__name__}",
                 ValidationError.ErrorCode.WRONG_TYPE,
-                ".index",
+                "index",
             )
         if len(index) != 2:
             raise ValidationError(
                 f"Feature2DOverride index should be a list of length 2, not length {len(index)}",
                 ValidationError.ErrorCode.WRONG_TYPE,
-                ".index",
+                "index",
             )
         for i, x in enumerate(index):
             if isinstance(x, int) or (isinstance(x, float) and x.is_integer()):
@@ -90,7 +90,7 @@ class Feature2DOverride(FeatureOverride):
             raise ValidationError(
                 f"Feature2DOverride index should be a list of ints. Index {i} is {x}, which is not an integer.",
                 ValidationError.ErrorCode.WRONG_TYPE,
-                f".index[{i}]",
+                ["index", i],
             )
         index = typing.cast(typing.List[Union[int, float]], index)
         return cls(asset, int(index[0]), int(index[1]))
@@ -109,16 +109,13 @@ class Feature2D(Feature):
         self._overrides = {}
         self.set_overrides(overrides)
         if isinstance(justify, str):
-            try:
+            with JsonContext("justify"):
                 justify = get_justify(
                     justify,
                     Justify2D.one_word_aliases,
                     Justify2D.x_word,
                     Justify2D.y_word,
                 )
-            except JSONTraceable as e:
-                e.extend("justify")
-                raise e
         self.justifyX, self.justifyY = justify
 
     def set_overrides(self, overrides: typing.Optional[typing.List[Feature2DOverride]]):
@@ -204,25 +201,20 @@ class Feature2D(Feature):
             raise ValidationError(
                 f"JSON body for Feature2D justify should be a string, not {justify.__class__.__name__}",
                 ValidationError.ErrorCode.WRONG_TYPE,
-                ".justify",
+                "justify",
             )
         raw_overrides = json_body.get("overrides", [])
         if not isinstance(raw_overrides, list):
             raise ValidationError(
                 f"JSON body for Feature2D overrides should be a list, not {raw_overrides.__class__.__name__}",
                 ValidationError.ErrorCode.WRONG_TYPE,
-                ".overrides",
+                "overrides",
             )
 
         overrides: typing.List[Feature2DOverride] = []
         for i, o in enumerate(raw_overrides):
-            try:
+            with JsonContext("overrides", i):
                 overrides.append(Feature2DOverride.import_(o, theme_directory))
-            except JSONTraceable as e:
-                # re-contextualize
-                e.extend(i)
-                e.extend("overrides")
-                raise e
 
         check_feature(json_body, cls.FEATURE_TYPES)
 

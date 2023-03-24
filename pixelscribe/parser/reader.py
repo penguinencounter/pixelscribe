@@ -7,11 +7,9 @@ from pprint import pprint as rp
 
 from .json_types import JSON, JSONArray, JSONObject
 
-# from json_types import JSON, JSONArray, JSONObject
-
-
-JsonPath = typing.List[typing.Union[str, int]]
 FrozenJsonPath = typing.Tuple[typing.Union[str, int], ...]
+MutableJsonPath = typing.List[typing.Union[str, int]]
+JsonPath = typing.Union[MutableJsonPath, FrozenJsonPath]
 
 
 class StringStream:
@@ -61,30 +59,38 @@ class FilePosStorage:
         # freeze
         fzn: FrozenJsonPath = tuple(path_to)
         if fzn in self.positions and not allow_overwrite:
-            raise KeyError("Path already assigned a file position")
+            raise KeyError(
+                f"Path already assigned a file position: {path_to}; it is at {self.positions[fzn]}"
+            )
         self.positions[fzn] = position
+
+    def get(self, path_to: JsonPath) -> int:
+        fzn: FrozenJsonPath = tuple(path_to)
+        if fzn not in self.positions:
+            raise KeyError(f"Path not found: {path_to}")
+        return self.positions[fzn]
 
 
 def _take(stream: StringStream, needed_chars: str, error: bool = True) -> bool:
-    startpos = stream.tell()
+    start_pos = stream.tell()
     read = stream.read(len(needed_chars), error)
     if read != needed_chars:
         if error:
             raise ValueError(
-                f"expecting '{needed_chars}', got '{read}' at position {startpos}\n "
-                f"stream={stream.source[startpos:startpos+32]}"
+                f"expecting '{needed_chars}', got '{read}' at position {start_pos}\n "
+                f"stream={stream.source[start_pos:start_pos+32]}"
             )
         else:
             # rewind the stream
-            stream.seek(startpos)
+            stream.seek(start_pos)
             return False
     return True
 
 
 def _check(stream: StringStream, checked_chars: str) -> bool:
-    startpos = stream.tell()
+    start_pos = stream.tell()
     read = stream.read(len(checked_chars))
-    stream.seek(startpos)  # rewind the stream
+    stream.seek(start_pos)  # rewind the stream
     return read == checked_chars
 
 
@@ -94,7 +100,9 @@ def _whitespace(stream: StringStream):
     regex = r"[ \n\r\t]*"
     number = re.match(regex, stream.peek())
     if number is None:
-        raise ValueError("whitespace fail (whaaaaaa?)")
+        raise ValueError(
+            "whitespace failed to match, even though it can match an empty string?? (this is not good)"
+        )
     stream.read(len(number.group(0)))
 
 
@@ -108,7 +116,7 @@ def loads(json_string: str) -> typing.Tuple[JSON, FilePosStorage]:
 def _json_value(
     stream: StringStream,
     path_storage: FilePosStorage,
-    path_to_this: typing.Optional[JsonPath] = None,
+    path_to_this: typing.Optional[MutableJsonPath] = None,
 ) -> JSON:
     if path_to_this is None:
         path_to_this = []
@@ -133,7 +141,7 @@ def _json_value(
         # is it a NUMBER?
         next_char = stream.peek()[0]  # next char, no advance
         if next_char in "-0123456789":
-            # yeah ok
+            # yes, it is
             res = _json_number(stream)
         else:
             # no clue lol
@@ -149,7 +157,7 @@ def _json_number(stream: StringStream) -> typing.Union[float, int]:
     is_negative = _take(stream, "-", False)
 
     # Main digit part
-    def digits() -> int:
+    def read_digits() -> int:
         digits = 0
         if _take(stream, "0", False):
             return digits
@@ -171,15 +179,15 @@ def _json_number(stream: StringStream) -> typing.Union[float, int]:
             digits += int(next_c)
         return digits
 
-    d = digits()
+    base_part = read_digits()
 
-    def fraction() -> float:
+    def read_fraction() -> float:
         if stream.eof():
             return 0.0
         if not _take(stream, ".", False):
             return 0.0
         fraction = 0.0
-        invexp = -1
+        inverted_exponent = -1
         # read digits
         while True:
             next_c = stream.read(1, False)
@@ -189,13 +197,13 @@ def _json_number(stream: StringStream) -> typing.Union[float, int]:
             if next_c not in "0123456789":
                 stream.rewind(1)
                 break
-            fraction += float(next_c) * (10.0**invexp)
-            invexp -= 1
+            fraction += float(next_c) * (10.0**inverted_exponent)
+            inverted_exponent -= 1
         return fraction
 
-    f = fraction()
+    fractional_part = read_fraction()
 
-    def exponent() -> int:
+    def read_exponent() -> int:
         if stream.eof():
             return 0
         if not (_take(stream, "e", False) or _take(stream, "E", False)):
@@ -219,10 +227,10 @@ def _json_number(stream: StringStream) -> typing.Union[float, int]:
             exponent *= -1
         return exponent
 
-    e = exponent()
+    exponential_part = read_exponent()
 
     # put it all together
-    result = (d + f) * (10**e)
+    result = (base_part + fractional_part) * (10**exponential_part)
     if is_negative:
         result *= -1
     if int(result) == result:
@@ -250,6 +258,8 @@ def _json_string(stream: StringStream) -> str:
                 b += "\f"
             elif control_char == "n":
                 b += "\n"
+            elif control_char == "r":
+                b += "\r"
             elif control_char == "t":
                 b += "\t"
             elif control_char == "u":
@@ -269,7 +279,7 @@ def _json_string(stream: StringStream) -> str:
 
 
 def _json_object(
-    stream: StringStream, path_storage: FilePosStorage, path_to_this: JsonPath
+    stream: StringStream, path_storage: FilePosStorage, path_to_this: MutableJsonPath
 ) -> JSONObject:  # todo: migrate types
     _take(stream, "{")
     _whitespace(stream)
@@ -295,7 +305,7 @@ def _json_object(
 
 
 def _json_array(
-    stream: StringStream, path_storage: FilePosStorage, path_to_this: JsonPath
+    stream: StringStream, path_storage: FilePosStorage, path_to_this: MutableJsonPath
 ) -> JSONArray:
     _take(stream, "[")
     _whitespace(stream)
@@ -321,6 +331,6 @@ def _json_array(
 if __name__ == "__main__":
     with open("/workspaces/pixelscribe/pixelscribe/theme-schema.json") as f:
         s = f.read()
-    result, store = loads(s)
-    print(result)
-    rp(store.positions)
+    loaded, storage = loads(s)
+    print(loaded)
+    rp(storage.positions)

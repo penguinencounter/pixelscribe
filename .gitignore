@@ -134,3 +134,6 @@ node_modules/
 
 # IntelliJ IDEs
 .idea/
+
+# Scratch testing files
+scratch*

@@ -1,7 +1,8 @@
 import enum
 import typing
 
-from pixelscribe import JSON, AssetResource, JSONTraceable, ValidationError, get_justify
+from pixelscribe import JSON, AssetResource, ValidationError, get_justify
+from pixelscribe.contexts import JsonContext
 
 
 class Anchor2D:
@@ -144,18 +145,15 @@ class Overlay:
         self.anchor_mode = anchor_mode
         if isinstance(anchor, str):
             # try to import it
-            try:
+            with JsonContext("anchor"):
                 anc = get_justify(
                     anchor, Anchor2D.one_word_aliases, Anchor2D.x_word, Anchor2D.y_word
                 )
-            except JSONTraceable as e:
-                e.extend("anchor")
-                raise e
             # validate...
             valid = Anchor2D.valid(anc[0], anc[1], self.anchor_mode)
             if not valid[0]:
                 raise ValidationError(
-                    valid[1], ValidationError.ErrorCode.INVALID_VALUE, ".anchor"
+                    valid[1], ValidationError.ErrorCode.INVALID_VALUE, "anchor"
                 )
             self.anchor = anc
         else:
@@ -163,7 +161,7 @@ class Overlay:
             valid = Anchor2D.valid(anchor[0], anchor[1], self.anchor_mode)
             if not valid[0]:
                 raise ValidationError(
-                    valid[1], ValidationError.ErrorCode.INVALID_VALUE, ".anchor"
+                    valid[1], ValidationError.ErrorCode.INVALID_VALUE, "anchor"
                 )
             self.anchor = anchor
 
@@ -187,13 +185,13 @@ class Overlay:
             raise ValidationError(
                 f"mode should be a string, not {anchor_mode.__class__.__name__}",
                 ValidationError.ErrorCode.WRONG_TYPE,
-                ".mode",
+                "mode",
             )
         if anchor_mode not in Anchor2D.anchor_modes:
             raise ValidationError(
                 f"Invalid anchor mode: {anchor_mode}",
                 ValidationError.ErrorCode.INVALID_VALUE,
-                ".mode",
+                "mode",
             )
         anchor_mode = Anchor2D.anchor_modes[anchor_mode]
 
@@ -209,7 +207,7 @@ class Overlay:
             raise ValidationError(
                 f"anchor should be a string, not {anchor.__class__.__name__}",
                 ValidationError.ErrorCode.WRONG_TYPE,
-                ".anchor",
+                "anchor",
             )
 
         return cls(asset, anchor_mode, anchor)

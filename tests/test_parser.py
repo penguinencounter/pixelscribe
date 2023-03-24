@@ -33,7 +33,14 @@ def test_other():
 
 def generate_fuzzing_data(max_branch: int = 10) -> typing.Tuple[str, JSON]:
     def random_str():
-        return "".join(random.choices(string.ascii_letters, k=random.randint(1, 50)))
+        return "".join(
+            random.choices(
+                list(string.ascii_letters)
+                + list("0123456789!@#$%^&*()_+-=,.<>?[]{};':")
+                + ["\n", "\t", "\r", "\b", "\f", "/", "\\"],
+                k=random.randint(1, 50),
+            )
+        )
 
     def random_int():
         return random.randint(-100, 100)

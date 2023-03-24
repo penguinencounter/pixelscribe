@@ -8,12 +8,12 @@ from pixelscribe import (
     AssetResource,
     Feature,
     FeatureOverride,
-    JSONTraceable,
     ValidationError,
     check_feature,
     next_multiple,
     odd,
 )
+from pixelscribe.contexts import JsonContext
 
 
 @enum.unique
@@ -78,7 +78,7 @@ class Feature1DOverride(FeatureOverride):
             raise ValidationError(
                 f"FeatureOverride index should be an integer. (provided: {index})",
                 ValidationError.ErrorCode.WRONG_TYPE,
-                ".index",
+                "index",
             )
         index = typing.cast(typing.Union[int, float], index)
         return cls(asset, int(index))
@@ -192,25 +192,20 @@ class Feature1D(Feature):
             raise ValidationError(
                 f"JSON body for Feature justify should be a string, not {justify.__class__.__name__}",
                 ValidationError.ErrorCode.WRONG_TYPE,
-                ".justify",
+                "justify",
             )
         raw_overrides = json_body.get("overrides", [])
         if not isinstance(raw_overrides, list):
             raise ValidationError(
                 f"JSON body for Feature overrides should be a list, not {raw_overrides.__class__.__name__}",
                 ValidationError.ErrorCode.WRONG_TYPE,
-                ".overrides",
+                "overrides",
             )
 
         overrides: typing.List[Feature1DOverride] = []
         for i, o in enumerate(raw_overrides):
-            try:
+            with JsonContext("overrides", i):
                 overrides.append(Feature1DOverride.import_(o, theme_directory))
-            except JSONTraceable as e:
-                # re-contextualize
-                e.extend(i)
-                e.extend("overrides")
-                raise e
 
         feature = check_feature(json_body, cls.FEATURE_TYPES)
         if feature in cls.HORIZONTAL_TYPES:

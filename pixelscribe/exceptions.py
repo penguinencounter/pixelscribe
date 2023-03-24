@@ -23,16 +23,23 @@ class JSONTraceable(Exception):
         super().__init__(message)
         self.json_path: typing.List[typing.Union[str, int]]
         if isinstance(json_path, str):
-            self.json_path = [json_path]
+            if json_path == "":
+                self.json_path = []
+            else:
+                self.json_path = [json_path]
         elif isinstance(json_path, list):  # type: ignore[reportUnnecessaryIsInstance]
             self.json_path = json_path
         else:
             raise TypeError(
                 f"JSON path should be a string or a list, not {type(json_path).__name__}"
             )
+        self.source_file: typing.Optional[str] = None
 
     def extend(self, key: typing.Union[str, int]):
         self.json_path.insert(0, key)
+
+    def set_source_file(self, source_file: str):
+        self.source_file = source_file
 
 
 class ValidationError(JSONTraceable):
@@ -42,7 +49,10 @@ class ValidationError(JSONTraceable):
         INVALID_VALUE = 3
 
     def __init__(
-        self, message: str, error_code: Union[int, ErrorCode] = -1, json_path: str = ""
+        self,
+        message: str,
+        error_code: Union[int, ErrorCode] = -1,
+        json_path: typing.Union[str, typing.List[typing.Union[str, int]]] = "",
     ):
         if isinstance(error_code, ValidationError.ErrorCode):
             error_code = error_code.value

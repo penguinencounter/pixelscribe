@@ -50,7 +50,7 @@ def check_feature(json_body: JSONObject, allowed: typing.List[str]) -> str:
         raise ValidationError(
             f'Feature(s) require a "feature" of type string, not {feature.__class__.__name__}.',
             ValidationError.ErrorCode.WRONG_TYPE,
-            ".feature",
+            "feature",
         )
 
     if feature not in allowed:
@@ -64,7 +64,7 @@ def check_feature(json_body: JSONObject, allowed: typing.List[str]) -> str:
         raise ValidationError(
             msg,
             ValidationError.ErrorCode.INVALID_VALUE,
-            ".feature",
+            "feature",
         )
     return feature
 
@@ -201,7 +201,7 @@ class AssetResource:
             raise ValidationError(
                 f"JSON body for AssetResource source should be a string, not {source.__class__.__name__}",
                 ValidationError.ErrorCode.WRONG_TYPE,
-                ".source",
+                "source",
             )
         # IF there is a crop, it must be exactly four integers.
         if "crop" in json_body:
@@ -210,13 +210,13 @@ class AssetResource:
                 raise ValidationError(
                     f"JSON body for AssetResource crop should be a list, not {crop.__class__.__name__}",
                     ValidationError.ErrorCode.WRONG_TYPE,
-                    ".crop",
+                    "crop",
                 )
             if len(crop) != 4:
                 raise ValidationError(
                     f'"crop" must be exactly 4 integers or omitted, got {len(crop)} instead',
                     ValidationError.ErrorCode.INVALID_VALUE,
-                    ".crop",
+                    "crop",
                 )
             intermediate: typing.List[int] = []
             for i, crop_att in enumerate(crop):
@@ -230,7 +230,7 @@ class AssetResource:
                     raise ValidationError(
                         f"Cropping values must be integers that are at least 0. (got {crop_att})",
                         ValidationError.ErrorCode.INVALID_VALUE,
-                        f".crop[{i}]",
+                        ["crop", i],
                     )
             # noinspection PyTypeChecker
             new_crop: typing.Optional[typing.Tuple[int, int, int, int]] = tuple(
@@ -285,7 +285,7 @@ class Feature:
             raise ValidationError(
                 'Feature(s) require a "feature".',
                 ValidationError.ErrorCode.MISSING_VALUE,
-                ".feature",
+                "feature",
             )
         check_feature(json_body, cls.FEATURE_TYPES)
 
