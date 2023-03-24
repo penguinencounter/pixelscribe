@@ -2,6 +2,8 @@ import typing
 from typing import Union
 
 from pixelscribe import JSONTraceable
+from pixelscribe.json_exception_handler import handle
+from pixelscribe.parser.reader import FilePosStorage
 
 
 class JsonContext(object):
@@ -48,4 +50,25 @@ class JsonFileContext(object):
         if issubclass(exc_type, JSONTraceable):
             exc_val = typing.cast(JSONTraceable, exc_val)
             exc_val.set_source_file(self.source_file)
+        return False
+
+
+class FinalizeJsonErrors:
+    def __init__(self, source_info: typing.Optional[FilePosStorage]):
+        self.source_info = source_info
+
+    def __enter__(self):
+        return None
+
+    def __exit__(
+        self,
+        exc_type: typing.Optional[typing.Type[BaseException]],
+        exc_val: typing.Optional[BaseException],
+        exc_tb: typing.Any,
+    ):
+        if exc_type is None:
+            return
+        if issubclass(exc_type, JSONTraceable):
+            exc_val = typing.cast(JSONTraceable, exc_val)
+            exc_val.args = (handle(exc_val, self.source_info),)
         return False

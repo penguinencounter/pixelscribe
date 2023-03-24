@@ -291,6 +291,22 @@ class Feature:
 
         return cls(asset)
 
+    @staticmethod
+    def get_feature_type(json_body: JSON):
+        if not isinstance(json_body, dict):
+            raise ValidationError(
+                f"JSON body for Feature should be a dict, not {json_body.__class__.__name__}",
+                ValidationError.ErrorCode.WRONG_TYPE,
+                "",
+            )
+        if "feature" not in json_body:
+            raise ValidationError(
+                'Feature(s) require a "feature". (Getting feature type)',
+                ValidationError.ErrorCode.MISSING_VALUE,
+                "",
+            )
+        return json_body["feature"]
+
 
 class FeatureOverride:
     def __init__(self, asset: AssetResource):
