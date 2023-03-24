@@ -31,7 +31,7 @@ def test_other():
     assert loads("null")[0] is None
 
 
-def generate_fuzzing_data(max_branch: int = 10) -> typing.Tuple[str, JSON]:
+def generate_fuzzing_data(max_branch: int = 10, depth: int = 0) -> typing.Tuple[str, JSON]:
     def random_str():
         return "".join(
             random.choices(
@@ -56,25 +56,30 @@ def generate_fuzzing_data(max_branch: int = 10) -> typing.Tuple[str, JSON]:
 
     def random_list():
         return [
-            generate_fuzzing_data(max_branch // 4 * 3)[1]
+            generate_fuzzing_data(max_branch // 4 * 3, depth + 1)[1]
             for _ in range(random.randint(0, max_branch))
         ]
 
     def random_dict():
         return {
-            random_str(): generate_fuzzing_data(max_branch // 4 * 3)[1]
+            random_str(): generate_fuzzing_data(max_branch // 4 * 3, depth + 1)[1]
             for _ in range(random.randint(0, max_branch))
         }
 
     def random_value():
+        branch_factor = 1 / (2 ** depth)
+        branching = [
+            random_list,
+            random_dict,
+        ]
+        if random.random() < branch_factor:
+            return random.choice(branching)()
         return random.choice(
             [
                 random_str,
                 random_int,
                 random_float,
                 random_special,
-                random_list,
-                random_dict,
             ]
         )()
 
