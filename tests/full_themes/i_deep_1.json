@@ -1,0 +1,26 @@
+{
+  "features": [
+    {
+  "feature": "background",
+  "source": "example.png",
+  "overrides": [
+    {
+      "source": "example.png",
+      "index": [1, 2]
+    },
+    {
+      "source": "example.png",
+      "index": 3
+    },
+    {
+      "source": "example.png",
+      "index": 4
+    },
+    {
+      "source": "example.png",
+      "index": 5
+    }
+  ]
+}
+  ]
+}

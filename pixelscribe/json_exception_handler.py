@@ -1,8 +1,17 @@
 import os.path
 import typing
 
+# pycharm bug
+# noinspection PyUnresolvedReferences
+from colorama import Fore, Style, just_fix_windows_console
+
 from pixelscribe import JSONTraceable, exceptions
 from pixelscribe.parser.reader import FilePosStorage
+
+just_fix_windows_console()
+
+
+CONTEXT = 5
 
 
 def handle(exception: JSONTraceable, import_data: typing.Optional[FilePosStorage]):
@@ -36,8 +45,27 @@ def handle(exception: JSONTraceable, import_data: typing.Optional[FilePosStorage
         lines = source.splitlines()
         lineno_width = len(str(line_col[0])) + 1
         # print two lines before the error
-        for i in range(line_col[0] - 2, line_col[0] + 3):
+        for i in range(line_col[0] - CONTEXT, line_col[0] + CONTEXT + 1):
+            linebar = " \u2502"
+            if i == line_col[0] - CONTEXT or i == 1:
+                if i != 1:
+                    linebar = " ↑"
+                else:
+                    linebar = " \u2577"
+            if i == line_col[0] + CONTEXT or i == len(lines):
+                if i != len(lines):
+                    linebar = " ↓"
+                else:
+                    linebar = " \u2575"
+            if i == line_col[0]:
+                linebar = "->"
             if 0 < i <= len(lines):
-                result += f"{str(i).rjust(lineno_width)}: {lines[i-1]}\n"
+                if i == line_col[0]:
+                    result += (
+                        f"{Fore.YELLOW}{Style.BRIGHT}{str(i).rjust(lineno_width)}{linebar}"
+                        f"{lines[i-1]}{Style.RESET_ALL}\n"
+                    )
+                else:
+                    result += f"{str(i).rjust(lineno_width)}{linebar} {lines[i-1]}\n"
     # ...
     return result
