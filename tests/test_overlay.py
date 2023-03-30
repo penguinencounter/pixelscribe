@@ -114,3 +114,19 @@ def test_initializer(
 def test_invalid_initializer(args: typing.Tuple[Anchor2D.AnchorMode, str]):
     with pytest.raises(ValidationError):
         Overlay(asset_resource_16, anchor_mode=args[0], anchor=args[1])
+
+
+def test_invalid_anchor_and_above():
+    with pytest.raises(ValidationError):
+        Overlay(
+            asset_resource_16,
+            anchor_mode=Anchor2D.AnchorMode.OUTSIDE,
+            anchor="top",
+            above=True,
+        )
+        Overlay(
+            asset_resource_16,
+            anchor_mode=Anchor2D.AnchorMode.EDGE,
+            anchor="top",
+            above=True,
+        )

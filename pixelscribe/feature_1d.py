@@ -125,11 +125,12 @@ class Feature1D(Feature):
     def __init__(
         self,
         asset: AssetResource,
+        feature_type: str,
         justify: typing.Union[str, Justify1D] = "center",
         direction: Direction = Direction.HORIZONTAL,
         overrides: typing.Optional[typing.List[Feature1DOverride]] = None,
     ):
-        super().__init__(asset)
+        super().__init__(asset, feature_type)
         if isinstance(justify, str):
             justify = Justify1D.from_name(justify)
         self.justify = justify
@@ -137,6 +138,18 @@ class Feature1D(Feature):
         self.overrides: typing.Dict[int, Feature1DOverride] = {
             o.x: o for o in (overrides or [])
         }
+
+    @property
+    def parallel(self) -> int:
+        if self.direction == Direction.HORIZONTAL:
+            return self._asset.source.width
+        return self._asset.source.height
+
+    @property
+    def perpendicular(self) -> int:
+        if self.direction == Direction.HORIZONTAL:
+            return self._asset.source.height
+        return self._asset.source.width
 
     def tile(self, length: int):
         """
@@ -216,4 +229,4 @@ class Feature1D(Feature):
             raise ValueError(
                 f"Unknown direction on feature type {feature} - report this as a bug!"
             )
-        return cls(asset, justify, direction, overrides)
+        return cls(asset, feature, justify, direction, overrides)

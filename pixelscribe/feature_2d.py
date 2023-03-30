@@ -102,10 +102,11 @@ class Feature2D(Feature):
     def __init__(
         self,
         asset: AssetResource,
+        feature_type: str,
         justify: typing.Union[str, typing.Tuple[Justify2D.X, Justify2D.Y]] = "center",
         overrides: typing.Optional[typing.List[Feature2DOverride]] = None,
     ):
-        super().__init__(asset)
+        super().__init__(asset, feature_type)
         self._overrides = {}
         self.set_overrides(overrides)
         if isinstance(justify, str):
@@ -216,6 +217,6 @@ class Feature2D(Feature):
             with JsonContext("overrides", i):
                 overrides.append(Feature2DOverride.import_(o, theme_directory))
 
-        check_feature(json_body, cls.FEATURE_TYPES)
+        feature_type = check_feature(json_body, cls.FEATURE_TYPES)
 
-        return cls(asset, justify, overrides)
+        return cls(asset, feature_type, justify, overrides)

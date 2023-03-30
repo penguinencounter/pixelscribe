@@ -37,7 +37,7 @@ def test_anchor_parsing(anchor: str, expected: Justify1D):
 
 @pytest.mark.parametrize("anchor,expected", all_anchors.items())
 def test_initializer(anchor: str, expected: Justify1D):
-    assert Feature1D(asset_resource_horizontal_16, anchor).justify == expected
+    assert Feature1D(asset_resource_horizontal_16, "n/a", anchor).justify == expected
 
 
 def rng_even_size() -> int:
@@ -55,7 +55,9 @@ def rng_odd_size() -> int:
 def test_rendering(
     anchor: str, direction: Direction, pool: Dict[Direction, Image.Image], size: int
 ):
-    feature = Feature1D(AssetResource.from_image(pool[direction]), anchor, direction)
+    feature = Feature1D(
+        AssetResource.from_image(pool[direction]), "top_edge", anchor, direction
+    )
     image = feature.tile(size)
     if direction == Direction.HORIZONTAL:
         assert image.width == size

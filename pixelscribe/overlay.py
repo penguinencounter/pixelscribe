@@ -140,6 +140,7 @@ class Overlay:
         asset: AssetResource,
         anchor_mode: Anchor2D.AnchorMode = Anchor2D.AnchorMode.INSIDE,
         anchor: typing.Union[str, typing.Tuple[Anchor2D.X, Anchor2D.Y]] = "center",
+        above: bool = False,
     ):
         self._asset = asset
         self.anchor_mode = anchor_mode
@@ -164,6 +165,14 @@ class Overlay:
                     valid[1], ValidationError.ErrorCode.INVALID_VALUE, "anchor"
                 )
             self.anchor = anchor
+
+        if above and anchor_mode != Anchor2D.AnchorMode.INSIDE:
+            raise ValidationError(
+                "above=true can only be used with mode 'inside'",
+                ValidationError.ErrorCode.INVALID_VALUE,
+                "above",
+            )
+        self.above = above
 
     @classmethod
     def import_(cls, json_body: JSON, theme_directory: typing.Optional[str] = None):
@@ -210,4 +219,15 @@ class Overlay:
                 "anchor",
             )
 
-        return cls(asset, anchor_mode, anchor)
+        if "above" in json_body:
+            above = json_body["above"]
+            if not isinstance(above, bool):
+                raise ValidationError(
+                    f"above should be a bool, not {above.__class__.__name__}",
+                    ValidationError.ErrorCode.WRONG_TYPE,
+                    "above",
+                )
+        else:
+            above = False
+
+        return cls(asset, anchor_mode, anchor, above)

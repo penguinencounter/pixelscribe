@@ -269,8 +269,17 @@ class Feature:
         "bullet",
     ]
 
-    def __init__(self, asset: AssetResource):
+    def __init__(self, asset: AssetResource, feature_type: str):
         self._asset = asset
+        self.feature_type = feature_type
+
+    @property
+    def width(self):
+        return self._asset.source.width
+
+    @property
+    def height(self):
+        return self._asset.source.height
 
     @classmethod
     def import_(cls, json_body: JSON, theme_directory: typing.Optional[str] = None):
@@ -281,15 +290,10 @@ class Feature:
                 "",
             )
         asset = AssetResource.import_(json_body, theme_directory)
-        if "feature" not in json_body:
-            raise ValidationError(
-                'Feature(s) require a "feature".',
-                ValidationError.ErrorCode.MISSING_VALUE,
-                "feature",
-            )
-        check_feature(json_body, cls.FEATURE_TYPES)
 
-        return cls(asset)
+        feature_type = check_feature(json_body, cls.FEATURE_TYPES)
+
+        return cls(asset, feature_type)
 
     @staticmethod
     def get_feature_type(json_body: JSON) -> str:

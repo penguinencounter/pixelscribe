@@ -49,16 +49,16 @@ def test_anchor_parsing(anchor: str, expected: typing.Tuple[Justify2D.X, Justify
 
 @pytest.mark.parametrize("anchor,expected", all_anchors.items())
 def test_initializer(anchor: str, expected: typing.Tuple[Justify2D.X, Justify2D.Y]):
-    assert Feature2D(asset_resource_16, anchor).justify == expected
+    assert Feature2D(asset_resource_16, "n/a", anchor).justify == expected
 
 
 def test_compatible_override():
-    Feature2D(asset_resource_16, "top left", [override_2d_16])
+    Feature2D(asset_resource_16, "background", "top left", [override_2d_16])
 
 
 def test_incompatible_override():
     with pytest.raises(ValueError) as exec_info:
-        Feature2D(asset_resource_16, "top left", [override_2d_13])
+        Feature2D(asset_resource_16, "background", "top left", [override_2d_13])
     print("\nexception message:\n", exec_info.value.args[0])
 
 
@@ -66,6 +66,6 @@ def test_incompatible_override():
 @pytest.mark.parametrize("image", tiling_test_sizes.values())
 @pytest.mark.parametrize("size", [(20, 20), (19, 19), (20, 19), (19, 20)])
 def test_tiling(image: AssetResource, anchor: str, size: typing.Tuple[int, int]):
-    f = Feature2D(image, anchor)
+    f = Feature2D(image, "n/a", anchor)
     t = f.tile(*size)
     assert t.size == size
