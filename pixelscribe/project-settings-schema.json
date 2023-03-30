@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Pixelscribe global configuration file",
+  "type": "object",
+  "properties": {
+    "$pixelscribe": {
+      "description": "The version of the package that this file is for, used to automatically upgrade old files",
+      "type": "string",
+      "$comment": "This should the version of the package. There should only be one valid version at a time.",
+      "const": "1.0.0"
+    }
+  },
+  "required": [
+    "$pixelscribe"
+  ]
+}
