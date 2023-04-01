@@ -1,0 +1,11 @@
+{
+    "$pixelscribe": "1.0.0",
+    "fonts": [
+        {
+            "oversample": 4,
+            "size": 10,
+            "source": "Roboto-Regular.ttf",
+            "vertical_clearance": 2
+        }
+    ]
+}

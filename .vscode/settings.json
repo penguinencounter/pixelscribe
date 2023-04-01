@@ -26,6 +26,12 @@
         "/tests/full_themes/*.json"
       ],
       "url": "./pixelscribe/theme-schema.json"
+    },
+    {
+      "fileMatch": [
+        "*/pixelscribe.json"
+      ],
+      "url": "./pixelscribe/project-settings-schema.json"
     }
   ],
   "python.analysis.typeCheckingMode": "basic",

@@ -8,6 +8,44 @@
       "type": "string",
       "$comment": "This should the version of the package. There should only be one valid version at a time.",
       "const": "1.0.0"
+    },
+    "fonts": {
+      "description": "All of the fonts that your project can use",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/font"
+      }
+    }
+  },
+  "definitions": {
+    "font": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "description": "Source file for this font",
+          "type": "string"
+        },
+        "oversample": {
+          "description": "How much to oversample the font when rendering - higher values will result in smoother fonts but larger output files",
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "size": {
+          "description": "Default size of \"Normal Text\", in points",
+          "type": "integer",
+          "minimum": 1
+        },
+        "vertical_clearance": {
+          "description": "How much vertical space to add between lines of text, in pixels",
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        }
+      },
+      "required": [
+        "source"
+      ]
     }
   },
   "required": [
