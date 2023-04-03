@@ -2,6 +2,8 @@
 
 a pixely documentation renderer
 
+![Logo](https://raw.githubusercontent.com/penguinencounter/pixelscribe/main/logo2.png)
+
 [![GitHub Actions](https://github.com/penguinencounter/pixelscribe/workflows/CI/badge.svg)](https://github.com/penguinencounter/pixelscribe/actions)
 [![PyPI](https://img.shields.io/pypi/v/pixelscribe.svg)](https://pypi.org/project/pixelscribe/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pixelscribe.svg)](https://pypi.org/project/pixelscribe/)
