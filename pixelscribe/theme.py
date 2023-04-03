@@ -213,8 +213,10 @@ class Theme:
         fn = self.config_path or "unknown"
         # fn += f'_w{width}_h{height}'
         fn = re.sub(r"[^a-zA-Z0-9_-]", "_", fn)
-        path = os.path.abspath(os.path.expanduser(f"~/Downloads/{fn}.png"))
-        layer0.save(path)
+        path = os.path.abspath(os.path.expanduser(f"~/Downloads"))
+        if os.path.exists(path):
+            path = os.path.join(path, fn + ".png")
+            layer0.save(path)
 
     @classmethod
     def import_(cls, config_path: str):
