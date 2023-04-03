@@ -142,13 +142,13 @@ class Feature1D(Feature):
     @property
     def parallel(self) -> int:
         if self.direction == Direction.HORIZONTAL:
-            return self._asset.source.width
+            return self.source.width
         return self.source.height
 
     @property
     def perpendicular(self) -> int:
         if self.direction == Direction.HORIZONTAL:
-            return self._asset.source.height
+            return self.source.height
         return self.source.width
 
     def tile(self, length: int):

@@ -164,6 +164,16 @@ class Theme:
             raise ValueError(
                 "Text layer must have the same aspect ratio as the output image (internal error)"
             )
+        final_scale = text_layer.size[0] / width
+        if final_scale < 1:
+            raise ValueError(
+                "Text layer must be at least as large as the output image (internal error)"
+            )
+        if int(final_scale) != final_scale:
+            raise ValueError(
+                "Text layer must be a multiple of the output image size (internal error)"
+            )
+        final_scale = int(final_scale)
         # create the bottom layer
         # background and borders
         layer_size = [width, height]
@@ -228,8 +238,88 @@ class Theme:
             )  # just take it ok
             layer1.alpha_composite(overlay.source, corner)
 
-        # now stack layer0 and layer1
-        layer0.alpha_composite(layer1, (0, 0))
+        # Layer 3 (layer 2 is text, so we'll ignore it for now)
+        layer3 = Image.new("RGBA", finalized_layer_size, (0, 0, 0, 0))
+        layer3_overlays = self.layer3()
+        for overlay in layer3_overlays:
+            assert overlay.anchor_mode in [
+                Anchor2D.AnchorMode.EDGE,
+                Anchor2D.AnchorMode.OUTSIDE,
+            ]
+            top_left_corner: typing.List[int] = [0, 0]
+            if overlay.anchor_mode == Anchor2D.AnchorMode.EDGE:
+                if overlay.anchor[0] == Anchor2D.X.LEFT:
+                    top_left_corner[0] = clearance.left - math.ceil(overlay.width / 2)
+                elif overlay.anchor[0] == Anchor2D.X.CENTER:
+                    top_left_corner[0] = clearance.left + (width - overlay.width) // 2
+                elif overlay.anchor[0] == Anchor2D.X.RIGHT:
+                    top_left_corner[0] = (
+                        clearance.left + width - math.floor(overlay.width / 2)
+                    )
+                if overlay.anchor[1] == Anchor2D.Y.TOP:
+                    top_left_corner[1] = clearance.top - math.ceil(overlay.height / 2)
+                elif overlay.anchor[1] == Anchor2D.Y.CENTER:
+                    top_left_corner[1] = clearance.top + (height - overlay.height) // 2
+                elif overlay.anchor[1] == Anchor2D.Y.BOTTOM:
+                    top_left_corner[1] = (
+                        clearance.top + height - math.floor(overlay.height / 2)
+                    )
+            elif overlay.anchor_mode == Anchor2D.AnchorMode.OUTSIDE:
+                if overlay.anchor[0] == Anchor2D.X.LEFT:
+                    top_left_corner[0] = clearance.left - overlay.width
+                elif overlay.anchor[0] == Anchor2D.X.CENTER:
+                    top_left_corner[0] = clearance.left + (width - overlay.width) // 2
+                elif overlay.anchor[0] == Anchor2D.X.RIGHT:
+                    top_left_corner[0] = clearance.left + width
+                if overlay.anchor[1] == Anchor2D.Y.TOP:
+                    top_left_corner[1] = clearance.top - overlay.height
+                elif overlay.anchor[1] == Anchor2D.Y.CENTER:
+                    top_left_corner[1] = clearance.top + (height - overlay.height) // 2
+                elif overlay.anchor[1] == Anchor2D.Y.BOTTOM:
+                    top_left_corner[1] = clearance.top + height
+            corner = typing.cast(typing.Tuple[int, int], tuple(top_left_corner))
+            layer3.alpha_composite(overlay.source, corner)
+
+        # rescale as necessary
+        if final_scale != 1:
+            layer0 = layer0.resize(
+                (
+                    finalized_layer_size[0] * final_scale,
+                    finalized_layer_size[1] * final_scale,
+                ),
+                Image.NEAREST,
+            )
+            layer1 = layer1.resize(
+                (
+                    finalized_layer_size[0] * final_scale,
+                    finalized_layer_size[1] * final_scale,
+                ),
+                Image.NEAREST,
+            )
+            layer3 = layer3.resize(
+                (
+                    finalized_layer_size[0] * final_scale,
+                    finalized_layer_size[1] * final_scale,
+                ),
+                Image.NEAREST,
+            )
+
+        # stack
+        final = Image.new(
+            "RGBA",
+            (
+                finalized_layer_size[0] * final_scale,
+                finalized_layer_size[1] * final_scale,
+            ),
+            (0, 0, 0, 0),
+        )
+        final.alpha_composite(layer0)
+        final.alpha_composite(layer1)
+        # this isn't corrected for the decor, so we need to shift it
+        final.alpha_composite(
+            text_layer, (clearance.left * final_scale, clearance.top * final_scale)
+        )
+        final.alpha_composite(layer3)
 
         # TODO remove this when done testing
         fn = self.config_path or "unknown"
@@ -238,7 +328,7 @@ class Theme:
         path = os.path.abspath(os.path.expanduser(f"~/Downloads"))
         if os.path.exists(path):
             path = os.path.join(path, fn + ".png")
-            layer0.save(path)
+            final.save(path)
 
     @classmethod
     def import_(cls, config_path: str):

@@ -283,7 +283,7 @@ class Feature:
 
     @property
     def source(self):
-        return self._asset.source
+        return self._asset.get()
 
     @classmethod
     def import_(cls, json_body: JSON, theme_directory: typing.Optional[str] = None):
