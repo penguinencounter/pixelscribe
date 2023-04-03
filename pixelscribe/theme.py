@@ -186,46 +186,28 @@ class Theme:
         # paste corners
         tlc = self.get_feature_by_type("top_left_corner", Feature).source
         layer0.alpha_composite(
-            tlc,
-            (clearance.left - tlc.width, clearance.top - tlc.height)
+            tlc, (clearance.left - tlc.width, clearance.top - tlc.height)
         )
         trc = self.get_feature_by_type("top_right_corner", Feature).source
         layer0.alpha_composite(
-            trc,
-            (clearance.left + width, clearance.top - trc.height)
+            trc, (clearance.left + width, clearance.top - trc.height)
         )
         blc = self.get_feature_by_type("bottom_left_corner", Feature).source
         layer0.alpha_composite(
-            blc,
-            (clearance.left - blc.width, clearance.top + height)
+            blc, (clearance.left - blc.width, clearance.top + height)
         )
         brc = self.get_feature_by_type("bottom_right_corner", Feature).source
-        layer0.alpha_composite(
-            brc,
-            (clearance.left + width, clearance.top + height)
-        )
+        layer0.alpha_composite(brc, (clearance.left + width, clearance.top + height))
 
         # paste edges
         top = self.get_feature_by_type("top_edge", Feature1D).tile(width)
-        layer0.alpha_composite(
-            top,
-            (clearance.left, clearance.top - top.height)
-        )
+        layer0.alpha_composite(top, (clearance.left, clearance.top - top.height))
         bottom = self.get_feature_by_type("bottom_edge", Feature1D).tile(width)
-        layer0.alpha_composite(
-            bottom,
-            (clearance.left, clearance.top + height)
-        )
+        layer0.alpha_composite(bottom, (clearance.left, clearance.top + height))
         left = self.get_feature_by_type("left_edge", Feature1D).tile(height)
-        layer0.alpha_composite(
-            left,
-            (clearance.left - left.width, clearance.top)
-        )
+        layer0.alpha_composite(left, (clearance.left - left.width, clearance.top))
         right = self.get_feature_by_type("right_edge", Feature1D).tile(height)
-        layer0.alpha_composite(
-            right,
-            (clearance.left + width, clearance.top)
-        )
+        layer0.alpha_composite(right, (clearance.left + width, clearance.top))
 
         # TODO remove this when done testing
         fn = self.config_path or "unknown"
@@ -364,30 +346,27 @@ def generate_default() -> Theme:
     # let's make a dark theme by default
     default.features.append(
         Feature2D(
-            AssetResource.from_image(Image.new("RGBA", (8, 8), (0x20, 0x20, 0x20, 0xff))),
+            AssetResource.from_image(
+                Image.new("RGBA", (8, 8), (0x20, 0x20, 0x20, 0xFF))
+            ),
             "background",
             "center",
             None,
         )
     )
 
-    empty1 = AssetResource.from_image(Image.new("RGBA", (1, 1), (0,0,0,0)))
+    empty1 = AssetResource.from_image(Image.new("RGBA", (1, 1), (0, 0, 0, 0)))
 
-    for ft in ["top_left_corner", "top_right_corner", "bottom_left_corner", "bottom_right_corner"]:
-        default.features.append(
-            Feature(
-                empty1,
-                ft
-            )
-        )
+    for ft in [
+        "top_left_corner",
+        "top_right_corner",
+        "bottom_left_corner",
+        "bottom_right_corner",
+    ]:
+        default.features.append(Feature(empty1, ft))
 
     for ft in ["top_edge", "bottom_edge", "left_edge", "right_edge"]:
-        default.features.append(
-            Feature1D(
-                empty1,
-                ft
-            )
-        )
+        default.features.append(Feature1D(empty1, ft))
     default.colors = {
         # default colors here
     }
