@@ -1,0 +1,10 @@
+{
+  "$pixelscribe": "1.0.0",
+  "features": [
+    {
+      "source": "example.png",
+      "feature": "background",
+      "justify": "center"
+    }
+  ]
+}

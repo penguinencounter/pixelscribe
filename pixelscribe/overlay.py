@@ -174,6 +174,18 @@ class Overlay:
             )
         self.above = above
 
+    @property
+    def width(self):
+        return self._asset.source.width
+
+    @property
+    def height(self):
+        return self._asset.source.height
+
+    @property
+    def source(self):
+        return self._asset.source
+
     @classmethod
     def import_(cls, json_body: JSON, theme_directory: typing.Optional[str] = None):
         if not isinstance(json_body, dict):

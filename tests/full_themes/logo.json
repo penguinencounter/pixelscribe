@@ -1,0 +1,24 @@
+{
+  "$pixelscribe": "1.0.0",
+  "features": [
+    {
+      "source": "rune1.png",
+      "feature": "background",
+      "justify": "center center",
+      "overrides": [
+        {
+          "source": "rune2.png",
+          "index": [0, 0]
+        }
+      ]
+    }
+  ],
+  "overlays": [
+    {
+      "source": "pixelscribe.png",
+      "anchor": "top left",
+      "mode": "inside",
+      "above": false
+    }
+  ]
+}

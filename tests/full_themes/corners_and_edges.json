@@ -1,0 +1,37 @@
+{
+  "$pixelscribe": "1.0.0",
+  "features": [
+    {
+      "feature": "top_left_corner",
+      "source": "example.png"
+    },
+    {
+      "feature": "top_right_corner",
+      "source": "example.png"
+    },
+    {
+      "feature": "bottom_left_corner",
+      "source": "example.png"
+    },
+    {
+      "feature": "bottom_right_corner",
+      "source": "example.png"
+    },
+    {
+      "feature": "top_edge",
+      "source": "horizontal.png"
+    },
+    {
+      "feature": "bottom_edge",
+      "source": "horizontal.png"
+    },
+    {
+      "feature": "left_edge",
+      "source": "vertical.png"
+    },
+    {
+      "feature": "right_edge",
+      "source": "vertical.png"
+    }
+  ]
+}
