@@ -1,6 +1,7 @@
 import pytest
 
-from pixelscribe.theme import Theme, DEFAULT
+from pixelscribe.theme import DEFAULT, Theme
+
 from .test_import import get_full_tests
 
 

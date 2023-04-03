@@ -5,7 +5,7 @@ import typing
 
 from PIL import Image
 
-from pixelscribe import Feature, parser, AssetResource
+from pixelscribe import AssetResource, Feature, parser
 from pixelscribe.contexts import FinalizeJsonErrors, JsonContext, JsonFileContext
 from pixelscribe.exceptions import ValidationError
 from pixelscribe.feature_1d import Feature1D
@@ -208,6 +208,28 @@ class Theme:
         layer0.alpha_composite(left, (clearance.left - left.width, clearance.top))
         right = self.get_feature_by_type("right_edge", Feature1D).tile(height)
         layer0.alpha_composite(right, (clearance.left + width, clearance.top))
+
+        # On to layer 1!
+        layer1 = Image.new("RGBA", finalized_layer_size, (0, 0, 0, 0))
+        layer1_overlays = self.layer1()
+        for overlay in layer1_overlays:
+            assert overlay.anchor_mode == Anchor2D.AnchorMode.INSIDE
+            top_left_corner: typing.List[int] = [clearance.left, clearance.top]
+            if overlay.anchor[0] == Anchor2D.X.CENTER:
+                top_left_corner[0] += (width - overlay.width) // 2
+            elif overlay.anchor[0] == Anchor2D.X.RIGHT:
+                top_left_corner[0] += width - overlay.width
+            if overlay.anchor[1] == Anchor2D.Y.CENTER:
+                top_left_corner[1] += (height - overlay.height) // 2
+            elif overlay.anchor[1] == Anchor2D.Y.BOTTOM:
+                top_left_corner[1] += height - overlay.height
+            corner = typing.cast(
+                typing.Tuple[int, int], tuple(top_left_corner)
+            )  # just take it ok
+            layer1.alpha_composite(overlay.source, corner)
+
+        # now stack layer0 and layer1
+        layer0.alpha_composite(layer1, (0, 0))
 
         # TODO remove this when done testing
         fn = self.config_path or "unknown"
