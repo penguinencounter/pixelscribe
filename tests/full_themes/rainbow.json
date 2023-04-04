@@ -25,51 +25,56 @@
   "overlays": [
     {
       "source": "rainbow/theme.png",
-      "crop": [7, 1, 19, 7],
+      "crop": [7, 0, 19, 7],
       "mode": "outside",
       "anchor": "top inside-left"
     },
     {
       "source": "rainbow/theme.png",
-      "crop": [18, 1, 30, 7],
+      "crop": [18, 0, 30, 7],
       "mode": "outside",
       "anchor": "top inside-right"
     },
     {
       "source": "rainbow/theme.png",
-      "crop": [1, 7, 7, 19],
+      "crop": [0, 7, 7, 19],
       "mode": "outside",
       "anchor": "inside-top left"
     },
     {
       "source": "rainbow/theme.png",
-      "crop": [1, 18, 7, 30],
+      "crop": [0, 18, 7, 30],
       "mode": "outside",
       "anchor": "inside-bottom left"
     },
     {
       "source": "rainbow/theme.png",
-      "crop": [30, 7, 36, 19],
+      "crop": [30, 7, 37, 19],
       "mode": "outside",
       "anchor": "inside-top right"
     },
     {
       "source": "rainbow/theme.png",
-      "crop": [30, 18, 36, 30],
+      "crop": [30, 18, 37, 30],
       "mode": "outside",
       "anchor": "inside-bottom right"
     },
     {
       "source": "rainbow/theme.png",
-      "crop": [7, 30, 19, 36],
+      "crop": [7, 30, 19, 37],
       "mode": "outside",
       "anchor": "bottom inside-left"
     },
     {
       "source": "rainbow/theme.png",
-      "crop": [18, 30, 30, 36],
+      "crop": [18, 30, 30, 37],
       "mode": "outside",
       "anchor": "bottom inside-right"
+    },
+    {
+      "source": "pixelscribe.png",
+      "mode": "inside",
+      "anchor": "center"
     }
   ]
 }
