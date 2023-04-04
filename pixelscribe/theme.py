@@ -121,15 +121,17 @@ class Theme:
                     typing.Literal["bottom"],
                 ]
             ] = []
+            if overlay.anchor_mode == Anchor2D.AnchorMode.INSIDE:
+                continue
+            if overlay.anchor[0] == Anchor2D.X.LEFT:
+                affected_sides.append("left")
+            elif overlay.anchor[0] == Anchor2D.X.RIGHT:
+                affected_sides.append("right")
+            if overlay.anchor[1] == Anchor2D.Y.TOP:
+                affected_sides.append("top")
+            elif overlay.anchor[1] == Anchor2D.Y.BOTTOM:
+                affected_sides.append("bottom")
             if overlay.anchor_mode == Anchor2D.AnchorMode.EDGE:
-                if overlay.anchor[0] == Anchor2D.X.LEFT:
-                    affected_sides.append("left")
-                elif overlay.anchor[0] == Anchor2D.X.RIGHT:
-                    affected_sides.append("right")
-                if overlay.anchor[1] == Anchor2D.Y.TOP:
-                    affected_sides.append("top")
-                elif overlay.anchor[1] == Anchor2D.Y.BOTTOM:
-                    affected_sides.append("bottom")
                 for side in affected_sides:
                     # left, right, top, or bottom
                     if side in ["left", "right"]:
@@ -137,14 +139,6 @@ class Theme:
                     else:
                         clearance.require(math.ceil(overlay.height / 2), side)
             if overlay.anchor_mode == Anchor2D.AnchorMode.OUTSIDE:
-                if overlay.anchor[0] in [Anchor2D.X.LEFT, Anchor2D.X.INSIDE_LEFT]:
-                    affected_sides.append("left")
-                elif overlay.anchor[0] in [Anchor2D.X.RIGHT, Anchor2D.X.INSIDE_RIGHT]:
-                    affected_sides.append("right")
-                if overlay.anchor[1] in [Anchor2D.Y.TOP, Anchor2D.Y.INSIDE_TOP]:
-                    affected_sides.append("top")
-                elif overlay.anchor[1] in [Anchor2D.Y.BOTTOM, Anchor2D.Y.INSIDE_BOTTOM]:
-                    affected_sides.append("bottom")
                 for side in affected_sides:
                     # left, right, top, or bottom
                     if side in ["left", "right"]:
@@ -267,14 +261,23 @@ class Theme:
             elif overlay.anchor_mode == Anchor2D.AnchorMode.OUTSIDE:
                 if overlay.anchor[0] == Anchor2D.X.LEFT:
                     top_left_corner[0] = clearance.left - overlay.width
+                elif overlay.anchor[0] == Anchor2D.X.INSIDE_LEFT:
+                    top_left_corner[0] = clearance.left
                 elif overlay.anchor[0] == Anchor2D.X.CENTER:
                     top_left_corner[0] = clearance.left + (width - overlay.width) // 2
+                elif overlay.anchor[0] == Anchor2D.X.INSIDE_RIGHT:
+                    top_left_corner[0] = clearance.left + width - overlay.width
                 elif overlay.anchor[0] == Anchor2D.X.RIGHT:
                     top_left_corner[0] = clearance.left + width
+
                 if overlay.anchor[1] == Anchor2D.Y.TOP:
                     top_left_corner[1] = clearance.top - overlay.height
+                elif overlay.anchor[1] == Anchor2D.Y.INSIDE_TOP:
+                    top_left_corner[1] = clearance.top
                 elif overlay.anchor[1] == Anchor2D.Y.CENTER:
                     top_left_corner[1] = clearance.top + (height - overlay.height) // 2
+                elif overlay.anchor[1] == Anchor2D.Y.INSIDE_BOTTOM:
+                    top_left_corner[1] = clearance.top + height - overlay.height
                 elif overlay.anchor[1] == Anchor2D.Y.BOTTOM:
                     top_left_corner[1] = clearance.top + height
             corner = typing.cast(typing.Tuple[int, int], tuple(top_left_corner))

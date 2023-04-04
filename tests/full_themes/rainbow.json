@@ -1,0 +1,75 @@
+{
+  "$pixelscribe": "1.0.0",
+  "features": [
+    {
+      "feature": "top_left_corner",
+      "source": "rainbow/theme.png",
+      "crop": [0, 0, 7, 7]
+    },
+    {
+      "feature": "top_right_corner",
+      "source": "rainbow/theme.png",
+      "crop": [30, 0, 37, 7]
+    },
+    {
+      "feature": "bottom_left_corner",
+      "source": "rainbow/theme.png",
+      "crop": [0, 30, 7, 37]
+    },
+    {
+      "feature": "bottom_right_corner",
+      "source": "rainbow/theme.png",
+      "crop": [30, 30, 37, 37]
+    }
+  ],
+  "overlays": [
+    {
+      "source": "rainbow/theme.png",
+      "crop": [7, 1, 19, 7],
+      "mode": "outside",
+      "anchor": "top inside-left"
+    },
+    {
+      "source": "rainbow/theme.png",
+      "crop": [18, 1, 30, 7],
+      "mode": "outside",
+      "anchor": "top inside-right"
+    },
+    {
+      "source": "rainbow/theme.png",
+      "crop": [1, 7, 7, 19],
+      "mode": "outside",
+      "anchor": "inside-top left"
+    },
+    {
+      "source": "rainbow/theme.png",
+      "crop": [1, 18, 7, 30],
+      "mode": "outside",
+      "anchor": "inside-bottom left"
+    },
+    {
+      "source": "rainbow/theme.png",
+      "crop": [30, 7, 36, 19],
+      "mode": "outside",
+      "anchor": "inside-top right"
+    },
+    {
+      "source": "rainbow/theme.png",
+      "crop": [30, 18, 36, 30],
+      "mode": "outside",
+      "anchor": "inside-bottom right"
+    },
+    {
+      "source": "rainbow/theme.png",
+      "crop": [7, 30, 19, 36],
+      "mode": "outside",
+      "anchor": "bottom inside-left"
+    },
+    {
+      "source": "rainbow/theme.png",
+      "crop": [18, 30, 30, 36],
+      "mode": "outside",
+      "anchor": "bottom inside-right"
+    }
+  ]
+}
