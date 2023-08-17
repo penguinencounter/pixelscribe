@@ -11,7 +11,7 @@ python = "^3.8"
 Pillow = "^9.5.0"
 cmarkgfm = "^2022.10.27"
 beautifulsoup4 = "^4.12.2"
-click = "^8.1.6"
+click = "^8.1.7"
 colorama = ">=0.4.6"
 
 [tool.poetry.group.dev.dependencies]
