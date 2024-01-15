@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.8"
 Pillow = "^9.5.0"
-cmarkgfm = "^2022.10.27"
+cmarkgfm = "^2024.1.14"
 beautifulsoup4 = "^4.12.2"
 click = "^8.1.7"
 colorama = ">=0.4.6"
